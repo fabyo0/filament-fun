@@ -1,10 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Providers;
 
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Vite;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rules\Password;
 
-class AppServiceProvider extends ServiceProvider
+final class AppServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.
@@ -14,11 +22,43 @@ class AppServiceProvider extends ServiceProvider
         //
     }
 
+    private function configureCommands(): void
+    {
+        DB::prohibitDestructiveCommands(
+            $this->app->isProduction()
+        );
+    }
+
+    private function configureVite(): void
+    {
+        Vite::useAggressivePrefetching();
+    }
+
+    private function configurePasswordValidation(): void
+    {
+        Password::defaults(fn() => $this->app->isProduction() ? Password::min(8)->uncompromised() : null);
+    }
+
+    private function configureUrl(): void
+    {
+        URL::forceHttps(App::isProduction());
+    }
+
+    private function configureModels(): void
+    {
+        Model::shouldBeStrict(!$this->app->isProduction());
+        Model::unguard();
+    }
+
     /**
      * Bootstrap any application services.
      */
     public function boot(): void
     {
-        //
+        $this->configureModels();
+        $this->configureUrl();
+        $this->configureVite();
+        $this->configureCommands();
+        $this->configurePasswordValidation();
     }
 }
