@@ -54,7 +54,7 @@ class Employee extends Model implements HasMedia
     public function fullName(): Attribute
     {
         return Attribute::make(
-            get : $this->first_name.$this->last_name
+            get: fn() => "{$this->first_name} {$this->last_name}"
         );
     }
 
