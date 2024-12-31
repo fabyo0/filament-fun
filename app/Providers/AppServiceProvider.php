@@ -6,10 +6,10 @@ namespace App\Providers;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Vite;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
 
 final class AppServiceProvider extends ServiceProvider
@@ -36,7 +36,7 @@ final class AppServiceProvider extends ServiceProvider
 
     private function configurePasswordValidation(): void
     {
-        Password::defaults(fn() => $this->app->isProduction() ? Password::min(8)->uncompromised() : null);
+        Password::defaults(fn () => $this->app->isProduction() ? Password::min(8)->uncompromised() : null);
     }
 
     private function configureUrl(): void
@@ -46,7 +46,7 @@ final class AppServiceProvider extends ServiceProvider
 
     private function configureModels(): void
     {
-        Model::shouldBeStrict(!$this->app->isProduction());
+        Model::shouldBeStrict(! $this->app->isProduction());
         Model::unguard();
     }
 
