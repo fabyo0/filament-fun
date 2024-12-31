@@ -25,8 +25,8 @@ use Spatie\MediaLibrary\InteractsWithMedia;
  */
 class Employee extends Model implements HasMedia
 {
-    use InteractsWithMedia;
     use HasFactory;
+    use InteractsWithMedia;
 
     protected $fillable = [
         'country_id',
