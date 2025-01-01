@@ -27,7 +27,6 @@ class EmployeeFactory extends Factory
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
             'registerMediaConversionsUsingModelInstance' => $this->faker->boolean(),
-
             'country_id' => Country::factory(),
             'state_id' => State::factory(),
             'city_id' => City::factory(),

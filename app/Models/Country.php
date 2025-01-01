@@ -27,6 +27,8 @@ class Country extends Model
 
     protected $fillable = [
         'name',
+        'code',
+        'phonecode',
     ];
 
     public function state(): HasMany
