@@ -14,16 +14,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory()->create([
-            'name' => 'Admin',
-            'email' => 'admin@example.com',
-            'password' => Hash::make('123'),
-        ]);
-
         $this->call([
             CountriesTableSeeder::class,
             StatesTableSeeder::class,
-            CitiesTableSeeder::class
+            CitiesTableSeeder::class,
+            PermissionsSeeder::class
         ]);
     }
 }
