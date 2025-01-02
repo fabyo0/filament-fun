@@ -52,6 +52,18 @@ final class AppServiceProvider extends ServiceProvider
         Model::unguard();
     }
 
+    private function languageSwitch(): void
+    {
+        // Switch language
+        LanguageSwitch::configureUsing(function (LanguageSwitch $switch) {
+            $switch
+                ->locales(['en', 'tr'])
+                ->circular()
+                ->outsidePanelPlacement(Placement::BottomRight)
+                ->visible(outsidePanels: true);
+        });
+    }
+
     /**
      * Bootstrap any application services.
      */
@@ -62,14 +74,6 @@ final class AppServiceProvider extends ServiceProvider
         $this->configureVite();
         $this->configureCommands();
         $this->configurePasswordValidation();
-
-        // Switch language
-        LanguageSwitch::configureUsing(function (LanguageSwitch $switch) {
-            $switch
-                ->locales(['en', 'tr'])
-                ->circular()
-                ->outsidePanelPlacement(Placement::BottomRight)
-                ->visible(outsidePanels: true);
-        });
+        $this->languageSwitch();
     }
 }

@@ -16,7 +16,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class CityResource extends Resource
 {
     protected static ?string $model = City::class;
-    protected static ?string $navigationIcon = 'heroicon-o-building-office-2';
+
+    protected static ?string $navigationIcon = 'fas-city';
     protected static ?string $navigationLabel = 'Cities';
     protected static ?string $navigationGroup = 'System';
 
@@ -59,6 +60,7 @@ class CityResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
