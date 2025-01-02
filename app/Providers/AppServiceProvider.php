@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use BezhanSalleh\FilamentLanguageSwitch\Enums\Placement;
+use BezhanSalleh\FilamentLanguageSwitch\LanguageSwitch;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
@@ -36,7 +38,7 @@ final class AppServiceProvider extends ServiceProvider
 
     private function configurePasswordValidation(): void
     {
-        Password::defaults(fn () => $this->app->isProduction() ? Password::min(8)->uncompromised() : null);
+        Password::defaults(fn() => $this->app->isProduction() ? Password::min(8)->uncompromised() : null);
     }
 
     private function configureUrl(): void
@@ -46,7 +48,7 @@ final class AppServiceProvider extends ServiceProvider
 
     private function configureModels(): void
     {
-        Model::shouldBeStrict(! $this->app->isProduction());
+        Model::shouldBeStrict(!$this->app->isProduction());
         Model::unguard();
     }
 
@@ -60,5 +62,14 @@ final class AppServiceProvider extends ServiceProvider
         $this->configureVite();
         $this->configureCommands();
         $this->configurePasswordValidation();
+
+        // Switch language
+        LanguageSwitch::configureUsing(function (LanguageSwitch $switch) {
+            $switch
+                ->locales(['en', 'tr'])
+                ->circular()
+                ->outsidePanelPlacement(Placement::BottomRight)
+                ->visible(outsidePanels: true);
+        });
     }
 }
