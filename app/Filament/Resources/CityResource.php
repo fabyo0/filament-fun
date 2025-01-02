@@ -41,6 +41,7 @@ class CityResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('state.name')
+                    ->badge()
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')

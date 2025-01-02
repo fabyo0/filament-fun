@@ -19,6 +19,7 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Jeffgreco13\FilamentBreezy\BreezyCore;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -27,10 +28,10 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->default()
             ->id('admin')
+            ->profile()
             ->path('admin')
             ->login()
             ->registration()
-            ->profile()
             ->colors([
                 'danger' => Color::Red,
                 'gray' => Color::Zinc,
@@ -61,7 +62,11 @@ class AdminPanelProvider extends PanelProvider
                 DispatchServingFilamentEvent::class,
             ])
             ->plugins([
-
+                BreezyCore::make()
+                    ->myProfile(
+                        slug: 'profile',
+                        navigationGroup: 'Settings'
+                    )
             ])
             ->authMiddleware([
                 Authenticate::class,

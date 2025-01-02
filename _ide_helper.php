@@ -23017,6 +23017,16 @@ namespace Barryvdh\Debugbar\Facades {
             }
     }
 
+namespace Jeffgreco13\FilamentBreezy\Facades {
+    /**
+     * 
+     *
+     * @see \Jeffgreco13\FilamentBreezy\FilamentBreezy
+     */
+    class FilamentBreezy {
+            }
+    }
+
 namespace Livewire {
     /**
      * 
@@ -31703,6 +31713,7 @@ namespace  {
     class Vite extends \Illuminate\Support\Facades\Vite {}
     class EloquentSerialize extends \AnourValar\EloquentSerialize\Facades\EloquentSerializeFacade {}
     class Debugbar extends \Barryvdh\Debugbar\Facades\Debugbar {}
+    class FilamentBreezy extends \Jeffgreco13\FilamentBreezy\Facades\FilamentBreezy {}
     class Livewire extends \Livewire\Livewire {}
 }
 
