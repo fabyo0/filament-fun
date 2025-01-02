@@ -21,6 +21,7 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Jeffgreco13\FilamentBreezy\BreezyCore;
+use Filament\FontProviders\GoogleFontProvider;
 
 final class AdminPanelProvider extends PanelProvider
 {
@@ -41,6 +42,8 @@ final class AdminPanelProvider extends PanelProvider
                 'success' => Color::Green,
                 'warning' => Color::Amber,
             ])
+            ->font('Inter', provider: GoogleFontProvider::class)
+            ->brandName('Filament Fun')
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
@@ -71,6 +74,7 @@ final class AdminPanelProvider extends PanelProvider
                     ),
                 \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make()
             ])
+            ->spa()
             ->authMiddleware([
                 Authenticate::class,
             ]);
