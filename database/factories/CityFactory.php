@@ -5,7 +5,6 @@ namespace Database\Factories;
 use App\Models\City;
 use App\Models\State;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Carbon;
 
 class CityFactory extends Factory
 {

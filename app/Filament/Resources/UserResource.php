@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\UserResource\Pages;
-use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -68,9 +67,9 @@ class UserResource extends Resource
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
                 Tables\Filters\SelectFilter::make('roles')
-                    ->relationship('roles', 'name')
+                    ->relationship(name: 'roles', titleAttribute: 'name')
                     ->multiple()
-                    ->preload(),
+                    ->preload()
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),

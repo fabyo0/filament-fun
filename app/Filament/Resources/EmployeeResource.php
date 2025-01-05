@@ -3,20 +3,27 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\EmployeeResource\Pages;
+use App\Models\City;
 use App\Models\Employee;
+use App\Models\State;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Support\Collection;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
 
 class EmployeeResource extends Resource
 {
     protected static ?string $model = Employee::class;
+
     protected static ?string $navigationIcon = 'fas-users-gear';
+
     protected static ?string $navigationGroup = 'Department';
 
- public static function form(Form $form): Form
+    public static function form(Form $form): Form
     {
         return $form
             ->schema([
@@ -53,33 +60,51 @@ class EmployeeResource extends Resource
                             ->imageResizeMode('cover')
                             ->imageCropAspectRatio('1:1')
                             ->imageResizeTargetWidth('400')
-                            ->imageResizeTargetHeight('400')
+                            ->imageResizeTargetHeight('400'),
                     ])->columns(2),
-
 
                 // Address Detail
                 Forms\Components\Section::make('Address Detail')
                     ->description('Put the address details in.')
                     ->schema([
                         Forms\Components\Select::make('country_id')
-                            ->relationship('country', 'name')
+                            ->relationship(name: 'country', titleAttribute: 'name')
                             ->label('Country')
                             ->placeholder('Select Country')
                             ->searchable()
+                            ->afterStateUpdated(function (Set $set) {
+                                $set(path: 'state_id', state: null);
+                                $set(path: 'city_id', state: null);
+                            })
+                            ->live()
                             ->preload()
                             ->native(false)
                             ->required(),
                         Forms\Components\Select::make('state_id')
-                            ->relationship('state', 'name')
+                            ->label('State')
+                            ->options(function (Get $get): Collection {
+                                return State::query()->where('country_id', $get('country_id'))
+                                    ->pluck('name', 'id');
+                            })
                             ->placeholder('Select State')
+                            ->afterStateUpdated(fn(Set $set) => $set('city_id', null))
                             ->native(false)
+                            ->preload()
+                            ->live()
                             ->searchable()
+                            ->disabled(fn(Get $get): bool => !$get('country_id'))
                             ->required(),
                         Forms\Components\Select::make('city_id')
-                            ->relationship('city', 'name')
+                            ->label('City')
+                            ->options(function (Get $get): Collection {
+                                return City::query()->where('state_id', $get('state_id'))
+                                    ->pluck('name', 'id');
+                            })
                             ->placeholder('Select City')
                             ->native(false)
                             ->searchable()
+                            ->live()
+                            ->disabled(fn(Get $get): bool => !$get('state_id'))
                             ->required(),
                         Forms\Components\Textarea::make('address')
                             ->maxLength(255),

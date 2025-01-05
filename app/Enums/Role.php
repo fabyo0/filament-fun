@@ -4,20 +4,12 @@ declare(strict_types=1);
 
 namespace App\Enums;
 
-enum Role: string
+use Filament\Support\Contracts\HasLabel;
+
+enum Role: string implements HasLabel
 {
     case ADMIN = 'Admin';
     case USER = 'User';
-
-    public function label(): string
-    {
-        return strtolower($this->value);
-    }
-
-    public static function values(): array
-    {
-        return array_column(self::cases(), 'value');
-    }
 
     public static function fromLabel(string $label): self
     {
@@ -25,6 +17,19 @@ enum Role: string
             'admin' => self::ADMIN,
             'user' => self::USER,
             default => throw new \ValueError("Invalid label: $label")
+        };
+    }
+
+    public static function values(): array
+    {
+        return array_column(self::cases(), 'value');
+    }
+
+    public function getLabel(): string
+    {
+        return match ($this) {
+            self::USER => 'User',
+            self::ADMIN => 'Admin'
         };
     }
 }

@@ -3,21 +3,22 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\CountryResource\Pages;
-use App\Filament\Resources\CountryResource\RelationManagers;
+use App\Filament\Resources\StateResource\RelationManagers\StateRelationManager;
 use App\Models\Country;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class CountryResource extends Resource
 {
     protected static ?string $model = Country::class;
+
     protected static ?string $navigationIcon = 'fas-flag';
+
     protected static ?string $navigationLabel = 'Country';
+
     protected static ?string $navigationGroup = 'System';
 
     public static function form(Form $form): Form
@@ -25,8 +26,13 @@ class CountryResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name'),
-                Forms\Components\TextInput::make('code'),
-                Forms\Components\TextInput::make('phonecode'),
+                Forms\Components\TextInput::make('code')
+                    ->string()
+                    ->length(5),
+                Forms\Components\TextInput::make('phonecode')
+                    ->required()
+                    ->numeric()
+                    ->maxLength(length: 5)
             ]);
     }
 
@@ -34,10 +40,12 @@ class CountryResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name'),
+                Tables\Columns\TextColumn::make('name')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('code')
+                    ->searchable()
                     ->badge(),
-                Tables\Columns\TextColumn::make('phonecode')
+                Tables\Columns\TextColumn::make('phonecode'),
             ])
             ->filters([
                 //
@@ -56,7 +64,7 @@ class CountryResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            StateRelationManager::class,
         ];
     }
 

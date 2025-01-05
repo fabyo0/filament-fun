@@ -3,24 +3,24 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\DepartmentResource\Pages;
-use App\Filament\Resources\DepartmentResource\RelationManagers;
 use App\Models\Department;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class DepartmentResource extends Resource
 {
     protected static ?string $model = Department::class;
-    protected static ?string $navigationIcon = 'fas-building-circle-arrow-right';
-    protected static ?string $navigationLabel = 'Department';
-    protected static ?string $modelLabel = 'Personal Department';
-    protected static ?string $navigationGroup = 'Department';
 
+    protected static ?string $navigationIcon = 'fas-building-circle-arrow-right';
+
+    protected static ?string $navigationLabel = 'Department';
+
+    protected static ?string $modelLabel = 'Personal Department';
+
+    protected static ?string $navigationGroup = 'Department';
 
     public static function form(Form $form): Form
     {

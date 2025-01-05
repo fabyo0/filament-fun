@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace App\Providers\Filament;
 
-use Filament\Http\Middleware\Authenticate;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
+use Filament\FontProviders\GoogleFontProvider;
+use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -21,7 +22,6 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Jeffgreco13\FilamentBreezy\BreezyCore;
-use Filament\FontProviders\GoogleFontProvider;
 
 final class AdminPanelProvider extends PanelProvider
 {
@@ -72,9 +72,8 @@ final class AdminPanelProvider extends PanelProvider
                         slug: 'profile',
                         navigationGroup: 'Settings'
                     ),
-                \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make()
+                \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make(),
             ])
-            ->spa()
             ->authMiddleware([
                 Authenticate::class,
             ]);

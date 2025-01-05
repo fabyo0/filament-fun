@@ -2,13 +2,11 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Enums\Role as RoleEnum;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Testing\Fluent\Concerns\Has;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\PermissionRegistrar;
-use App\Enums\Role as RoleEnum;
 
 class PermissionsSeeder extends Seeder
 {
@@ -42,7 +40,7 @@ class PermissionsSeeder extends Seeder
         $user = \App\Models\User::factory()->create([
             'name' => 'Example User',
             'email' => 'tester@example.com',
-            'password' => Hash::make('123')
+            'password' => Hash::make('123'),
         ]);
 
         $user->assignRole($userRole);
@@ -50,7 +48,7 @@ class PermissionsSeeder extends Seeder
         $admin = \App\Models\User::factory()->create([
             'name' => 'Example Admin User',
             'email' => 'admin@example.com',
-            'password' => Hash::make('123')
+            'password' => Hash::make('123'),
         ]);
         $admin->assignRole($adminRole);
     }

@@ -2,16 +2,14 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\Role;
 use App\Filament\Resources\StateResource\Pages;
-use App\Filament\Resources\StateResource\RelationManagers;
 use App\Models\State;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class StateResource extends Resource
 {
@@ -20,16 +18,23 @@ class StateResource extends Resource
     protected static ?string $navigationLabel = 'State';
     protected static ?string $navigationGroup = 'System';
 
-
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\Select::make('country_id')
-                    ->relationship('country', 'name')
+                    ->relationship(
+                        name: 'country',
+                        titleAttribute: 'name'
+                    )
+                    ->placeholder('Select Country')
+                    ->native(false)
+                    ->preload()
+                    ->searchable()
                     ->required(),
                 Forms\Components\TextInput::make('name')
                     ->required()
+                    ->placeholder('Enter state name')
                     ->maxLength(255),
             ]);
     }
