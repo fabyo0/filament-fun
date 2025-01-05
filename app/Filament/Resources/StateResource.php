@@ -8,6 +8,10 @@ use App\Filament\Resources\StateResource\Pages;
 use App\Models\State;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Infolists\Components\Grid;
+use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -26,20 +30,32 @@ class StateResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('country_id')
-                    ->relationship(
-                        name: 'country',
-                        titleAttribute: 'name'
-                    )
-                    ->placeholder('Select Country')
-                    ->native(false)
-                    ->preload()
-                    ->searchable()
-                    ->required(),
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->placeholder('Enter state name')
-                    ->maxLength(255),
+                Forms\Components\Section::make()
+                    ->schema([
+                        Forms\Components\Section::make('State Details')
+                            ->description('Fill in the details about the state.')
+                            ->icon('heroicon-o-map')
+                            ->collapsible()
+                            ->schema([
+                                Forms\Components\Grid::make(2)
+                                    ->schema([
+                                        Forms\Components\Select::make('country_id')
+                                            ->label('Country')
+                                            ->relationship('country', 'name')
+                                            ->placeholder('Select a country')
+                                            ->native(false)
+                                            ->preload()
+                                            ->searchable()
+                                            ->required(),
+
+                                        Forms\Components\TextInput::make('name')
+                                            ->label('State Name')
+                                            ->placeholder('Enter the state name')
+                                            ->required()
+                                            ->maxLength(255),
+                                    ]),
+                            ]),
+                    ]),
             ]);
     }
 
@@ -74,6 +90,28 @@ class StateResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
+            ]);
+    }
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                Section::make('State Information')
+                    ->icon('heroicon-o-map')
+                    ->schema([
+                        Grid::make(2)
+                            ->schema([
+                                TextEntry::make('country.name')
+                                    ->label('Country Name')
+                                    ->badge()
+                                    ->color('success'),
+
+                                TextEntry::make('name')
+                                    ->label('State Name')
+                                    ->weight('bold'),
+                            ]),
+                    ]),
             ]);
     }
 

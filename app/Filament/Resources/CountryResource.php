@@ -9,6 +9,10 @@ use App\Filament\Resources\StateResource\RelationManagers\StateRelationManager;
 use App\Models\Country;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Infolists\Components\Grid;
+use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -27,14 +31,36 @@ class CountryResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name'),
-                Forms\Components\TextInput::make('code')
-                    ->string()
-                    ->length(5),
-                Forms\Components\TextInput::make('phonecode')
-                    ->required()
-                    ->numeric()
-                    ->maxLength(length: 5),
+                Forms\Components\Section::make()
+                    ->schema([
+                        Forms\Components\Section::make('Country Details')
+                            ->description('Provide details about the country.')
+                            ->icon('heroicon-o-globe-alt')
+                            ->collapsible()
+                            ->schema([
+                                Forms\Components\Grid::make(2)
+                                    ->schema([
+                                        Forms\Components\TextInput::make('name')
+                                            ->label('Country Name')
+                                            ->placeholder('Enter country name')
+                                            ->required()
+                                            ->maxLength(255),
+
+                                        Forms\Components\TextInput::make('code')
+                                            ->label('Country Code')
+                                            ->placeholder('Enter country code (e.g., US)')
+                                            ->string()
+                                            ->maxLength(5),
+
+                                        Forms\Components\TextInput::make('phonecode')
+                                            ->label('Phone Code')
+                                            ->placeholder('Enter phone code (e.g., +1)')
+                                            ->required()
+                                            ->numeric()
+                                            ->maxLength(5),
+                                    ]),
+                            ]),
+                    ]),
             ]);
     }
 
@@ -69,6 +95,52 @@ class CountryResource extends Resource
         return [
             StateRelationManager::class,
         ];
+    }
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                Section::make('Country Information')
+                    ->icon('heroicon-o-globe-alt')
+                    ->description('Detailed information about the country.')
+                    ->schema([
+                        Grid::make(3)
+                            ->schema([
+                                TextEntry::make('name')
+                                    ->label('Country Name')
+                                    ->icon('heroicon-o-flag')
+                                    ->weight('bold')
+                                    ->badge()
+                                    ->color('success'),
+
+                                TextEntry::make('code')
+                                    ->label('Country Code')
+                                    ->icon('heroicon-o-identification')
+                                    ->badge()
+                                    ->color('info'),
+
+                                TextEntry::make('phonecode')
+                                    ->label('Phone Code')
+                                    ->icon('heroicon-o-phone')
+                                    ->badge()
+                                    ->color('warning')
+                                    ->formatStateUsing(fn (string $state): string => '+'.$state),
+                            ]),
+
+                        Grid::make(3)
+                            ->schema([
+                                TextEntry::make('states_count')
+                                    ->label('Total States')
+                                    ->state(function ($record) {
+                                        return $record->state()->count();
+                                    })
+                                    ->icon('heroicon-o-map')
+                                    ->badge()
+                                    ->color('primary'),
+                            ]),
+                    ]),
+            ]);
     }
 
     public static function getPages(): array

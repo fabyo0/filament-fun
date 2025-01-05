@@ -28,12 +28,20 @@ class DepartmentResource extends Resource
     {
         return $form
             ->schema([
+                // Department Section with description
                 Forms\Components\Section::make('Department')
+                    ->description('Fill in the department details below.')
                     ->schema([
                         Forms\Components\TextInput::make('name')
+                            ->label('Department Name')
+                            ->placeholder('Enter department name')
                             ->required()
-                            ->maxLength(255),
-                    ]),
+                            ->maxLength(255)
+                            ->helperText('Enter a unique name for the department.')
+                            ->columnSpan(2)
+                            ->autofocus(),
+                    ])
+                    ->columns(2),
             ]);
     }
 
@@ -83,7 +91,7 @@ class DepartmentResource extends Resource
         return [
             'index' => Pages\ListDepartments::route('/'),
             'create' => Pages\CreateDepartment::route('/create'),
-            'view' => Pages\ViewDepartment::route('/{record}'),
+            //            'view' => Pages\ViewDepartment::route('/{record}'),
             'edit' => Pages\EditDepartment::route('/{record}/edit'),
         ];
     }

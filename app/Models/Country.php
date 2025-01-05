@@ -33,7 +33,12 @@ class Country extends Model
 
     public function state(): HasMany
     {
-        return $this->hasMany(related: State::class);
+        return $this->hasMany(related: State::class, foreignKey: 'country_id');
+    }
+
+    public function cities(): HasMany
+    {
+        return $this->hasMany(related: City::class);
     }
 
     public function employee(): HasMany

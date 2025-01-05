@@ -8,6 +8,11 @@ use App\Filament\Resources\UserResource\Pages;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Infolists\Components\Grid;
+use Filament\Infolists\Components\ImageEntry;
+use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -26,18 +31,55 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('email')
-                    ->unique()
-                    ->email()
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('password')
-                    ->password()
-                    ->nullable()
-                    ->maxLength(255),
+                Forms\Components\Section::make()
+                    ->schema([
+                        Forms\Components\Section::make('User Details')
+                            ->description('Fill in the basic user details.')
+                            ->icon('heroicon-o-user')
+                            ->collapsible()
+                            ->schema([
+                                Forms\Components\TextInput::make('name')
+                                    ->label('Full Name')
+                                    ->placeholder('Enter full name')
+                                    ->required()
+                                    ->maxLength(255)
+                                    ->helperText('Please enter the user\'s full name'),
+
+                                Forms\Components\TextInput::make('email')
+                                    ->label('Email Address')
+                                    ->placeholder('Enter email address')
+                                    ->email()
+                                    ->unique()
+                                    ->required()
+                                    ->maxLength(255)
+                                    ->helperText('Ensure this email is unique'),
+
+                                Forms\Components\TextInput::make('password')
+                                    ->label('Password')
+                                    ->password()
+                                    ->nullable()
+                                    ->maxLength(255)
+                                    ->helperText('Leave blank to retain the current password'),
+                            ]),
+
+                        /* Forms\Components\Section::make('Role Details')
+                            ->description('Assign a role to the user.')
+                            ->icon('heroicon-o-shield-check')
+                            ->schema([
+                                Forms\Components\Select::make('role')
+                                    ->label('Assign Role')
+                                    ->preload()
+                                    ->relationship(
+                                        name: 'roles',
+                                        titleAttribute: 'name',
+                                    )
+                                    ->native(false)
+                                    ->placeholder('Select Role')
+                                    ->required()
+                                    ->searchable(),
+                            ]),*/
+
+                    ]),
             ]);
     }
 
@@ -51,6 +93,9 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('roles.name')
+                    ->badge()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email_verified_at')
                     ->dateTime()
@@ -92,6 +137,60 @@ class UserResource extends Resource
         return [
             //
         ];
+    }
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                Section::make('User Overview')
+                    ->icon('heroicon-o-user-circle')
+                    ->description('Overview of user profile and roles.')
+                    ->collapsible()
+                    ->schema([
+                        Grid::make(1)
+                            ->schema([
+                                ImageEntry::make('avatar')
+                                    ->label('Profile Picture')
+                                    ->circular()
+                                    ->height(120)
+                                    ->alignCenter()
+                                    ->columnSpanFull(),
+
+                                TextEntry::make('name')
+                                    ->label('Full Name')
+                                    ->size('lg')
+                                    ->weight('bold')
+                                    ->badge()
+                                    ->color('primary')
+                                    ->formatStateUsing(fn (string $state) => ucfirst($state)),
+
+                                TextEntry::make('email')
+                                    ->label('Email Address')
+                                    ->size('sm')
+                                    ->badge()
+                                    ->color('success'),
+                            ]),
+                    ]),
+
+                Section::make('Role Information')
+                    ->icon('heroicon-o-shield-check')
+                    ->description('User roles and permissions.')
+                    ->collapsible()
+                    ->schema([
+                        Grid::make(2)
+                            ->schema([
+                                TextEntry::make('roles.name')
+                                    ->label('Assigned Roles')
+                                    ->badge()
+                                    ->color('info')
+                                    ->separator(', ')
+                                    ->formatStateUsing(fn (string $state) => ucfirst($state))
+                                    ->weight('medium')
+                                    ->columnSpanFull(),
+                            ]),
+                    ]),
+            ]);
     }
 
     public static function getEloquentQuery(): Builder

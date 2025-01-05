@@ -6,6 +6,10 @@ use App\Filament\Resources\CityResource\Pages;
 use App\Models\City;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Infolists\Components\Grid;
+use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -24,12 +28,40 @@ class CityResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\Select::make('state_id')
-                    ->relationship(name: 'state', titleAttribute: 'name')
-                    ->required(),
+                Forms\Components\Section::make()
+                    ->schema([
+                        Forms\Components\Section::make('City Information')
+                            ->description('Provide the details of the city below.')
+                            ->icon('heroicon-o-map')
+                            ->collapsible()
+                            ->schema([
+                                Forms\Components\Grid::make(2)
+                                    ->schema([
+                                        Forms\Components\Select::make('state_id')
+                                            ->relationship(
+                                                name: 'state',
+                                                titleAttribute: 'name'
+                                            )
+                                            ->label('State')
+                                            ->placeholder('Select State')
+                                            ->native(false)
+                                            ->preload()
+                                            ->searchable()
+                                            ->required()
+                                            ->helperText('Choose the state this city belongs to.')
+                                            ->prefixIcon('heroicon-o-globe-alt'),
+
+                                        Forms\Components\TextInput::make('name')
+                                            ->label('City Name')
+                                            ->required()
+                                            ->placeholder('Enter city name')
+                                            ->maxLength(255)
+                                            ->helperText('Enter the official name of the city.')
+                                            ->prefixIcon('heroicon-o-building-office'),
+                                    ]),
+                            ]),
+                    ])
+                    ->columnSpan('full'),
             ]);
     }
 
@@ -67,6 +99,28 @@ class CityResource extends Resource
             ]);
     }
 
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                Section::make('City Information')
+                    ->icon('heroicon-o-map')
+                    ->schema([
+                        Grid::make(2)
+                            ->schema([
+                                TextEntry::make('state.name')
+                                    ->label('State Name')
+                                    ->badge()
+                                    ->color('success'),
+
+                                TextEntry::make('name')
+                                    ->label('City Name')
+                                    ->weight('bold'),
+                            ]),
+                    ]),
+            ]);
+    }
+
     public static function getRelations(): array
     {
         return [
@@ -79,7 +133,7 @@ class CityResource extends Resource
         return [
             'index' => Pages\ListCities::route('/'),
             'create' => Pages\CreateCity::route('/create'),
-            'view' => Pages\ViewCity::route('/{record}'),
+            //            'view' => Pages\ViewCity::route('/{record}'),
             'edit' => Pages\EditCity::route('/{record}/edit'),
         ];
     }
