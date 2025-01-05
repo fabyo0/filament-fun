@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Providers\Filament;
 
+use App\Filament\Pages\Backups;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\FontProviders\GoogleFontProvider;
 use Filament\Http\Middleware\Authenticate;
@@ -15,6 +16,7 @@ use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Widgets;
+use Firefly\FilamentBlog\Blog;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -26,6 +28,7 @@ use Joaopaulolndev\FilamentGeneralSettings\FilamentGeneralSettingsPlugin;
 use Leandrocfe\FilamentApexCharts\FilamentApexChartsPlugin;
 use pxlrbt\FilamentSpotlight\SpotlightPlugin;
 use Rmsramos\Activitylog\ActivitylogPlugin;
+use ShuvroRoy\FilamentSpatieLaravelBackup\FilamentSpatieLaravelBackupPlugin;
 
 final class AdminPanelProvider extends PanelProvider
 {
@@ -68,6 +71,7 @@ final class AdminPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])
+            ->spa()
             ->plugins(plugins: [
                 FilamentShieldPlugin::make(),
                 BreezyCore::make()
@@ -79,7 +83,10 @@ final class AdminPanelProvider extends PanelProvider
                 FilamentApexChartsPlugin::make(),
                 FilamentGeneralSettingsPlugin::make(),
                 SpotlightPlugin::make(),
-                ActivitylogPlugin::make()->navigationGroup('Utilities'),
+                ActivitylogPlugin::make()->navigationGroup('General Settings'),
+                FilamentSpatieLaravelBackupPlugin::make()
+                    ->usingPage(Backups::class),
+                Blog::make(),
             ])
             ->authMiddleware([
                 Authenticate::class,

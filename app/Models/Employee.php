@@ -86,5 +86,4 @@ class Employee extends Model implements HasMedia
         return LogOptions::defaults()
             ->logAll();
     }
-
 }

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources;
 
+use App\Filament\Resources\CityResource\RelationManagers\CityRelationManager;
+use App\Filament\Resources\EmployeeRelationResource\RelationManagers\EmployeeRelationManager;
 use App\Filament\Resources\StateResource\Pages;
 use App\Models\State;
 use Filament\Forms;
@@ -117,7 +119,8 @@ class StateResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            EmployeeRelationManager::class,
+            CityRelationManager::class,
         ];
     }
 

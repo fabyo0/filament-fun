@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\CountryResource\Pages;
+use App\Filament\Resources\EmployeeRelationResource\RelationManagers\EmployeeRelationManager;
 use App\Filament\Resources\StateResource\RelationManagers\StateRelationManager;
 use App\Models\Country;
 use Filament\Forms;
@@ -94,6 +95,7 @@ class CountryResource extends Resource
     {
         return [
             StateRelationManager::class,
+            EmployeeRelationManager::class,
         ];
     }
 
