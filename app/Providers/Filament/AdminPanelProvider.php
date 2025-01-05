@@ -24,6 +24,8 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Jeffgreco13\FilamentBreezy\BreezyCore;
 use Joaopaulolndev\FilamentGeneralSettings\FilamentGeneralSettingsPlugin;
 use Leandrocfe\FilamentApexCharts\FilamentApexChartsPlugin;
+use pxlrbt\FilamentSpotlight\SpotlightPlugin;
+use Rmsramos\Activitylog\ActivitylogPlugin;
 
 final class AdminPanelProvider extends PanelProvider
 {
@@ -76,6 +78,8 @@ final class AdminPanelProvider extends PanelProvider
                 FilamentShieldPlugin::make(),
                 FilamentApexChartsPlugin::make(),
                 FilamentGeneralSettingsPlugin::make(),
+                SpotlightPlugin::make(),
+                ActivitylogPlugin::make()->navigationGroup('Utilities'),
             ])
             ->authMiddleware([
                 Authenticate::class,
