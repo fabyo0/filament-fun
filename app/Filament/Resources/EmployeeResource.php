@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\EmployeeResource\Pages;
@@ -8,12 +10,12 @@ use App\Models\Employee;
 use App\Models\State;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Support\Collection;
-use Filament\Forms\Get;
-use Filament\Forms\Set;
 
 class EmployeeResource extends Resource
 {
@@ -87,12 +89,12 @@ class EmployeeResource extends Resource
                                     ->pluck('name', 'id');
                             })
                             ->placeholder('Select State')
-                            ->afterStateUpdated(fn(Set $set) => $set('city_id', null))
+                            ->afterStateUpdated(fn (Set $set) => $set('city_id', null))
                             ->native(false)
                             ->preload()
                             ->live()
                             ->searchable()
-                            ->disabled(fn(Get $get): bool => !$get('country_id'))
+                            ->disabled(fn (Get $get): bool => ! $get('country_id'))
                             ->required(),
                         Forms\Components\Select::make('city_id')
                             ->label('City')
@@ -104,7 +106,7 @@ class EmployeeResource extends Resource
                             ->native(false)
                             ->searchable()
                             ->live()
-                            ->disabled(fn(Get $get): bool => !$get('state_id'))
+                            ->disabled(fn (Get $get): bool => ! $get('state_id'))
                             ->required(),
                         Forms\Components\Textarea::make('address')
                             ->maxLength(255),
@@ -116,8 +118,10 @@ class EmployeeResource extends Resource
                 // Date hired
                 Forms\Components\Section::make('Date Hired')
                     ->schema([
-                        Forms\Components\DatePicker::make('date_of_birth'),
+                        Forms\Components\DatePicker::make('date_of_birth')
+                            ->displayFormat('d/m/Y'),
                         Forms\Components\DatePicker::make('date_hired')
+                            ->displayFormat('d/m/Y')
                             ->required(),
                     ]),
             ]);
@@ -127,43 +131,23 @@ class EmployeeResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('country.name')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('state.name')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('city.name')
-                    ->numeric()
-                    ->sortable(),
+                Tables\Columns\TextColumn::make('full_name')
+                    ->searchable(['first_name', 'last_name']),
                 Tables\Columns\TextColumn::make('department.name')
+                    ->badge()
                     ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('first_name')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('last_name')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('avatar')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('middle_name')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('address')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('zip_code')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('date_of_birth')
-                    ->date()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('date_hired')
                     ->date()
                     ->sortable(),
-            ])
+            ])->defaultSort(column: 'first_name', direction: 'desc')
             ->filters([
                 //
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

@@ -43,8 +43,6 @@ class Employee extends Model implements HasMedia
         'date_hired',
     ];
 
-    protected $appends = ['fullName'];
-
     protected function casts(): array
     {
         return [

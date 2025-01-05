@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\CountryResource\Pages;
@@ -32,7 +34,7 @@ class CountryResource extends Resource
                 Forms\Components\TextInput::make('phonecode')
                     ->required()
                     ->numeric()
-                    ->maxLength(length: 5)
+                    ->maxLength(length: 5),
             ]);
     }
 
@@ -51,6 +53,7 @@ class CountryResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])

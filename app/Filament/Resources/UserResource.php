@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\UserResource\Pages;
@@ -15,7 +17,9 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
+
     protected static ?string $navigationIcon = 'fas-user-gear';
+
     protected static ?string $navigationGroup = 'Filament Shield';
 
     public static function form(Form $form): Form
@@ -69,7 +73,7 @@ class UserResource extends Resource
                 Tables\Filters\SelectFilter::make('roles')
                     ->relationship(name: 'roles', titleAttribute: 'name')
                     ->multiple()
-                    ->preload()
+                    ->preload(),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
