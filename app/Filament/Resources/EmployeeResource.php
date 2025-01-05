@@ -223,6 +223,8 @@ class EmployeeResource extends Resource
                                 fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
                             );
                     }),
+                // TODO: Consider using FiltersLayout::AboveContent to display the filter as a menu.
+                // https://filamentphp.com/docs/3.x/tables/filters/layout
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
