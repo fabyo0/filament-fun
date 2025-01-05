@@ -22,6 +22,8 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Jeffgreco13\FilamentBreezy\BreezyCore;
+use Joaopaulolndev\FilamentGeneralSettings\FilamentGeneralSettingsPlugin;
+use Leandrocfe\FilamentApexCharts\FilamentApexChartsPlugin;
 
 final class AdminPanelProvider extends PanelProvider
 {
@@ -52,7 +54,6 @@ final class AdminPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -65,14 +66,16 @@ final class AdminPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])
-            ->plugins([
+            ->plugins(plugins: [
                 FilamentShieldPlugin::make(),
                 BreezyCore::make()
                     ->myProfile(
                         slug: 'profile',
                         navigationGroup: 'Settings'
                     ),
-                \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make(),
+                FilamentShieldPlugin::make(),
+                FilamentApexChartsPlugin::make(),
+                FilamentGeneralSettingsPlugin::make(),
             ])
             ->authMiddleware([
                 Authenticate::class,

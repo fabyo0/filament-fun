@@ -9,6 +9,7 @@ use App\Models\City;
 use App\Models\Employee;
 use App\Models\State;
 use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
@@ -19,7 +20,10 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
 class EmployeeResource extends Resource
@@ -72,7 +76,6 @@ class EmployeeResource extends Resource
                                     ->required()
                                     ->helperText('Select the department the user belongs to.'),
                             ]),
-
                         Forms\Components\FileUpload::make('avatar')
                             ->label('Profile Picture')
                             ->image()
@@ -148,6 +151,7 @@ class EmployeeResource extends Resource
                                     ->label('ZIP Code')
                                     ->placeholder('Enter ZIP code')
                                     ->maxLength(255)
+                                    ->numeric()
                                     ->helperText('Enter the user\'s ZIP code.'),
                             ]),
                     ]),
@@ -192,7 +196,33 @@ class EmployeeResource extends Resource
                     ->sortable(),
             ])->defaultSort(column: 'first_name', direction: 'desc')
             ->filters([
-                //
+                SelectFilter::make('Department')
+                    ->label('Filter by Department')
+                    ->native(false)
+                    ->searchable()
+                    ->preload()
+                    ->relationship(
+                        name: 'department',
+                        titleAttribute: 'name'
+                    ),
+                Filter::make('created_at')
+                    ->form([
+                        DatePicker::make('created_from')
+                            ->displayFormat('d/m/Y'),
+                        DatePicker::make('created_until')
+                            ->displayFormat('d/m/Y'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['created_from'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                            )
+                            ->when(
+                                $data['created_until'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                            );
+                    }),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),

@@ -47,7 +47,6 @@ class StateResource extends Resource
                                             ->preload()
                                             ->searchable()
                                             ->required(),
-
                                         Forms\Components\TextInput::make('name')
                                             ->label('State Name')
                                             ->placeholder('Enter the state name')

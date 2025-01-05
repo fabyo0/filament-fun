@@ -22617,6 +22617,26 @@ namespace Jeffgreco13\FilamentBreezy\Facades {
             }
     }
 
+namespace Joaopaulolndev\FilamentGeneralSettings\Facades {
+    /**
+     * 
+     *
+     * @see \Joaopaulolndev\FilamentGeneralSettings\FilamentGeneralSettings
+     */
+    class FilamentGeneralSettings {
+            }
+    }
+
+namespace Leandrocfe\FilamentApexCharts\Facades {
+    /**
+     * 
+     *
+     * @see \Leandrocfe\FilamentApexCharts\FilamentApexCharts
+     */
+    class FilamentApexCharts {
+            }
+    }
+
 namespace Livewire {
     /**
      * 
@@ -31283,6 +31303,8 @@ namespace  {
     class EloquentSerialize extends \AnourValar\EloquentSerialize\Facades\EloquentSerializeFacade {}
     class FilamentShield extends \BezhanSalleh\FilamentShield\Facades\FilamentShield {}
     class FilamentBreezy extends \Jeffgreco13\FilamentBreezy\Facades\FilamentBreezy {}
+    class FilamentGeneralSettings extends \Joaopaulolndev\FilamentGeneralSettings\Facades\FilamentGeneralSettings {}
+    class FilamentApexCharts extends \Leandrocfe\FilamentApexCharts\Facades\FilamentApexCharts {}
     class Livewire extends \Livewire\Livewire {}
 }
 

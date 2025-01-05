@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources;
 
+use App\Enums\Role;
 use App\Filament\Resources\UserResource\Pages;
 use App\Models\User;
 use Filament\Forms;
@@ -62,22 +63,19 @@ class UserResource extends Resource
                                     ->helperText('Leave blank to retain the current password'),
                             ]),
 
-                        /* Forms\Components\Section::make('Role Details')
+                        Forms\Components\Section::make('Role Details')
                             ->description('Assign a role to the user.')
                             ->icon('heroicon-o-shield-check')
                             ->schema([
                                 Forms\Components\Select::make('role')
                                     ->label('Assign Role')
                                     ->preload()
-                                    ->relationship(
-                                        name: 'roles',
-                                        titleAttribute: 'name',
-                                    )
+                                    ->options(Role::class)
                                     ->native(false)
                                     ->placeholder('Select Role')
                                     ->required()
                                     ->searchable(),
-                            ]),*/
+                            ]),
 
                     ]),
             ]);
