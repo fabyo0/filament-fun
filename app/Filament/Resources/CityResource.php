@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\CityResource\Pages;
+use App\Filament\Resources\EmployeeRelationResource\RelationManagers\EmployeeRelationManager;
 use App\Models\City;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -22,7 +23,7 @@ class CityResource extends Resource
 
     protected static ?string $navigationLabel = 'Cities';
 
-    protected static ?string $navigationGroup = 'System';
+    protected static ?string $navigationGroup = 'Locations';
 
     public static function form(Form $form): Form
     {
@@ -124,7 +125,7 @@ class CityResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            EmployeeRelationManager::class,
         ];
     }
 

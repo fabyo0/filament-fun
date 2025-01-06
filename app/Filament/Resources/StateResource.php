@@ -26,7 +26,7 @@ class StateResource extends Resource
 
     protected static ?string $navigationLabel = 'State';
 
-    protected static ?string $navigationGroup = 'System';
+    protected static ?string $navigationGroup = 'Locations';
 
     public static function form(Form $form): Form
     {

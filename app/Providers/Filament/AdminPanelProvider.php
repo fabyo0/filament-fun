@@ -83,7 +83,8 @@ final class AdminPanelProvider extends PanelProvider
                 FilamentApexChartsPlugin::make(),
                 FilamentGeneralSettingsPlugin::make(),
                 SpotlightPlugin::make(),
-                ActivitylogPlugin::make()->navigationGroup('General Settings'),
+                ActivitylogPlugin::make()
+                    ->navigationGroup('General Settings'),
                 FilamentSpatieLaravelBackupPlugin::make()
                     ->usingPage(Backups::class),
                 Blog::make(),
