@@ -10,7 +10,6 @@ use App\Models\Employee;
 use App\Models\State;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
@@ -122,12 +121,12 @@ class EmployeeResource extends Resource
                                             ->pluck('name', 'id');
                                     })
                                     ->placeholder('Select State')
-                                    ->afterStateUpdated(fn(Set $set) => $set('city_id', null))
+                                    ->afterStateUpdated(fn (Set $set) => $set('city_id', null))
                                     ->native(false)
                                     ->preload()
                                     ->live()
                                     ->searchable()
-                                    ->disabled(fn(Get $get): bool => !$get('country_id'))
+                                    ->disabled(fn (Get $get): bool => ! $get('country_id'))
                                     ->required()
                                     ->helperText('Select the state within the country.'),
 
@@ -140,7 +139,7 @@ class EmployeeResource extends Resource
                                     ->placeholder('Select City')
                                     ->searchable()
                                     ->live()
-                                    ->disabled(fn(Get $get): bool => !$get('state_id'))
+                                    ->disabled(fn (Get $get): bool => ! $get('state_id'))
                                     ->required()
                                     ->helperText('Select the city within the selected state.'),
 
@@ -210,7 +209,7 @@ class EmployeeResource extends Resource
                     ->date('d M Y')
                     ->sortable()
                     ->icon('heroicon-o-calendar')
-                    ->description(fn($record) => 'Service: ' . Carbon::parse($record->date_hired)->diffForHumans(null, true))
+                    ->description(fn ($record) => 'Service: '.Carbon::parse($record->date_hired)->diffForHumans(null, true))
                     ->toggleable(),
 
             ])
@@ -241,26 +240,26 @@ class EmployeeResource extends Resource
                         return $query
                             ->when(
                                 $data['hired_from'],
-                                fn(Builder $query, $date): Builder => $query->whereDate('date_hired', '>=', $date),
+                                fn (Builder $query, $date): Builder => $query->whereDate('date_hired', '>=', $date),
                             )
                             ->when(
                                 $data['hired_until'],
-                                fn(Builder $query, $date): Builder => $query->whereDate('date_hired', '<=', $date),
+                                fn (Builder $query, $date): Builder => $query->whereDate('date_hired', '<=', $date),
                             );
                     })
                     ->indicateUsing(function (array $data): array {
                         $indicators = [];
 
                         if ($data['hired_from'] ?? null) {
-                            $indicators[] = 'Hired from ' . Carbon::parse($data['hired_from'])->toFormattedDateString();
+                            $indicators[] = 'Hired from '.Carbon::parse($data['hired_from'])->toFormattedDateString();
                         }
 
                         if ($data['hired_until'] ?? null) {
-                            $indicators[] = 'Hired until ' . Carbon::parse($data['hired_until'])->toFormattedDateString();
+                            $indicators[] = 'Hired until '.Carbon::parse($data['hired_until'])->toFormattedDateString();
                         }
 
                         return $indicators;
-                    })
+                    }),
             ])
             ->filtersFormColumns(2)
             ->actions([

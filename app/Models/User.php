@@ -6,6 +6,8 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Firefly\FilamentBlog\Traits\HasBlog;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -45,7 +47,7 @@ use Spatie\Permission\Traits\HasRoles;
  *
  * @mixin \Eloquent
  */
-class User extends Authenticatable implements HasMedia
+class User extends Authenticatable implements FilamentUser, HasMedia
 {
     use HasBlog;
 
@@ -93,7 +95,7 @@ class User extends Authenticatable implements HasMedia
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'last_login_at' => 'datetime'
+            'last_login_at' => 'datetime',
         ];
     }
 
@@ -111,5 +113,10 @@ class User extends Authenticatable implements HasMedia
     public function canComment(): bool
     {
         return true;
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return $this->hasRole(roles: 'admin');
     }
 }

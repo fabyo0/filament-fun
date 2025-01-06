@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources;
 
-use App\Enums\Role;
 use App\Filament\Resources\UserResource\Pages;
 use App\Models\User;
 use Filament\Forms;
@@ -23,6 +22,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+use Spatie\Permission\Models\Role;
 
 class UserResource extends Resource
 {
@@ -65,18 +65,35 @@ class UserResource extends Resource
                                     ->nullable()
                                     ->maxLength(255)
                                     ->helperText('Leave blank to retain the current password'),
+
+                                Forms\Components\FileUpload::make('avatar')
+                                    ->label('Profile Picture')
+                                    ->image()
+                                    ->maxSize(1024)
+                                    ->directory('avatars')
+                                    ->preserveFilenames()
+                                    ->imageResizeMode('cover')
+                                    ->imageCropAspectRatio('1:1')
+                                    ->imageResizeTargetWidth('400')
+                                    ->imageResizeTargetHeight('400')
+                                    ->helperText('Upload a profile picture (Max size: 5MB).'),
                             ]),
 
                         Forms\Components\Section::make('Role Details')
                             ->description('Assign a role to the user.')
                             ->icon('heroicon-o-shield-check')
                             ->schema([
-                                Forms\Components\Select::make('role')
+                                Forms\Components\Select::make('roles')
                                     ->label('Assign Role')
                                     ->preload()
-                                    ->options(Role::class)
-                                    ->native(false)
+                                    /*->relationship(
+                                        name: 'roles',
+                                        titleAttribute: 'name',
+                                        modifyQueryUsing: fn ($query) => $query->where('guard_name', 'web')
+                                    )*/
+                                    ->options(Role::pluck('name', 'name')->toArray())
                                     ->placeholder('Select Role')
+                                    ->native(false)
                                     ->required()
                                     ->searchable(),
                             ]),
@@ -165,7 +182,7 @@ class UserResource extends Resource
                             ->options([
                                 'verified' => 'Verified Users',
                                 'unverified' => 'Unverified Users',
-                            ])
+                            ]),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
                         return $query->when(

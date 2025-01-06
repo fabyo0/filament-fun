@@ -66,6 +66,13 @@ final class AppServiceProvider extends ServiceProvider
         });
     }
 
+    private function filamentAsset(): void
+    {
+        FilamentAsset::register([
+            Js::make('stripe-js', 'https://js.stripe.com/v3/'),
+        ]);
+    }
+
     /**
      * Bootstrap any application services.
      */
@@ -77,9 +84,6 @@ final class AppServiceProvider extends ServiceProvider
         $this->configureCommands();
         $this->configurePasswordValidation();
         $this->languageSwitch();
-
-        FilamentAsset::register([
-            Js::make('stripe-js', 'https://js.stripe.com/v3/'),
-        ]);
+        $this->filamentAsset();
     }
 }

@@ -4,18 +4,25 @@ namespace App\Filament\Resources\UserResource\Pages;
 
 use App\Filament\Resources\UserResource;
 use Filament\Resources\Pages\CreateRecord;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Database\Eloquent\Model;
 
 class CreateUser extends CreateRecord
 {
     protected static string $resource = UserResource::class;
 
-    protected ?string $subheading = 'This form will create an user';
+    protected ?string $subheading = 'This form will create user';
 
-    protected function mutateFormDataBeforeCreate(array $data): array
+    protected function handleRecordCreation(array $data): Model
     {
-        $data['password'] = Hash::make($data['password']);
+        $role = $data['roles'] ?? null;
+        unset($data['roles']);
 
-        return $data;
+        $user = static::getModel()::create($data);
+
+        if ($role) {
+            $user->assignRole($role);
+        }
+
+        return $user;
     }
 }

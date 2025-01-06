@@ -91,6 +91,7 @@ final class AdminPanelProvider extends PanelProvider
                     ->usingPage(Backups::class),
                 Blog::make(),
             ])
+            ->databaseNotifications()
             ->authMiddleware([
                 Authenticate::class,
             ]);

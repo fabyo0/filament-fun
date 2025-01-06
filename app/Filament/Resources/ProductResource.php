@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProductResource\Pages;
 use App\Models\Product;
+use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Infolists\Components\Actions;
 use Filament\Infolists\Components\Actions\Action;
@@ -19,9 +20,6 @@ use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use NumberFormatter;
-use Filament\Forms;
-use Filament\Infolists\Components;
-use pxlrbt\FilamentExcel\Actions\Concerns\ExportableAction;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 
 class ProductResource extends Resource
@@ -159,6 +157,7 @@ class ProductResource extends Resource
                                 ->label('Price')
                                 ->formatStateUsing(function ($state) {
                                     $formatter = new NumberFormatter(app()->getLocale(), NumberFormatter::CURRENCY);
+
                                     return $formatter->formatCurrency(amount: $state / 100, currency: 'eur');
                                 })
                                 ->columnSpan(1)
@@ -187,7 +186,6 @@ class ProductResource extends Resource
                 ->columns(1),
         ]);
     }
-
 
     public static function getRelations(): array
     {
