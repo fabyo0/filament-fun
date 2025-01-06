@@ -6,6 +6,8 @@ namespace App\Providers;
 
 use BezhanSalleh\FilamentLanguageSwitch\Enums\Placement;
 use BezhanSalleh\FilamentLanguageSwitch\LanguageSwitch;
+use Filament\Support\Assets\Js;
+use Filament\Support\Facades\FilamentAsset;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
@@ -75,5 +77,9 @@ final class AppServiceProvider extends ServiceProvider
         $this->configureCommands();
         $this->configurePasswordValidation();
         $this->languageSwitch();
+
+        FilamentAsset::register([
+            Js::make('stripe-js', 'https://js.stripe.com/v3/'),
+        ]);
     }
 }

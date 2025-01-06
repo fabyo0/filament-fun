@@ -8,6 +8,7 @@ namespace App\Models;
 use Database\Factories\UserFactory;
 use Firefly\FilamentBlog\Traits\HasBlog;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -50,6 +51,7 @@ class User extends Authenticatable implements HasMedia
 
     /** @use HasFactory<UserFactory> */
     use HasFactory;
+
     use HasRoles;
     use InteractsWithMedia;
     use LogsActivity;
@@ -66,6 +68,7 @@ class User extends Authenticatable implements HasMedia
         'email',
         'password',
         'avatar',
+        'stripe_customer_id',
     ];
 
     /**
@@ -91,9 +94,15 @@ class User extends Authenticatable implements HasMedia
         ];
     }
 
+    public function order(): HasMany
+    {
+        return $this->hasMany(related: Order::class);
+    }
+
     public function getActivitylogOptions(): LogOptions
     {
-        return LogOptions::all();
+        return LogOptions::defaults()
+            ->logAll();
     }
 
     public function canComment(): bool

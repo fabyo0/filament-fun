@@ -7,6 +7,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "ext-intl": "*",
         "bezhansalleh/filament-language-switch": "^3.1",
         "bezhansalleh/filament-shield": "^3.3",
         "filament/filament": "^3.2",
@@ -23,7 +24,8 @@
         "rmsramos/activitylog": "^1.0",
         "shuvroroy/filament-spatie-laravel-backup": "^2.2",
         "spatie/laravel-medialibrary": "^11.11",
-        "spatie/laravel-permission": "^6.10"
+        "spatie/laravel-permission": "^6.10",
+        "stripe/stripe-php": "^16.4"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^3.4",
