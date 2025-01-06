@@ -7,13 +7,20 @@ use App\Models\Product;
 use Filament\Forms\Form;
 use Filament\Infolists\Components\Actions;
 use Filament\Infolists\Components\Actions\Action;
+use Filament\Infolists\Components\Grid;
+use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\Summarizers\Summarizer;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use NumberFormatter;
+use Filament\Forms;
+use Filament\Infolists\Components;
 
 class ProductResource extends Resource
 {
@@ -27,7 +34,36 @@ class ProductResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Forms\Components\Section::make()
+                    ->schema([
+                        Forms\Components\Section::make('Product Information')
+                            ->description('Provide the details of the product below.')
+                            ->icon('heroicon-o-cube')
+                            ->collapsible()
+                            ->schema([
+                                Forms\Components\Grid::make(2)
+                                    ->schema([
+                                        Forms\Components\TextInput::make('name')
+                                            ->label('Product Name')
+                                            ->required()
+                                            ->placeholder('Enter product name')
+                                            ->maxLength(255)
+                                            ->helperText('Enter the official name of the product.')
+                                            ->prefixIcon('heroicon-o-archive-box'),
+
+                                        Forms\Components\TextInput::make('price')
+                                            ->label('Price')
+                                            ->alphaNum()
+                                            ->minValue(0)
+                                            ->required()
+                                            ->placeholder('Enter product price')
+                                            ->numeric()
+                                            ->helperText('Enter the price of the product.')
+                                            ->prefixIcon('heroicon-o-currency-dollar'),
+                                    ]),
+                            ]),
+                    ])
+                    ->columnSpan('full'),
             ]);
     }
 
@@ -35,20 +71,60 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name'),
-                TextColumn::make('price')
-                    ->formatStateUsing(function ($state) {
-                        $formatter = new NumberFormatter(app()->getLocale(), NumberFormatter::CURRENCY);
+                TextColumn::make('name')
+                    ->label('Product Name')
+                    ->searchable()
+                    ->sortable()
+                    ->copyable()
+                    ->color('primary')
+                    ->icon('heroicon-o-cube')
+                    ->weight('bold')
+                    ->toggleable(),
 
-                        return $formatter->formatCurrency(amount: $state / 100, currency: 'eur');
+                TextColumn::make('price')
+                    ->label('Price')
+                    ->sortable()
+                    ->money('eur')
+                    ->alignEnd()
+                    ->color('success')
+                    ->icon('heroicon-o-currency-euro')
+                    ->toggleable()
+                    ->summarize([
+                        Summarizer::make()
+                            ->label('Average')
+                            ->using(fn ($query) => $query->avg('price') / 100)
+                            ->money('eur'),
+                    ]),
+            ])
+            ->defaultSort('name', 'asc')
+            ->filters([
+                Filter::make('price_range')
+                    ->form([
+                        Forms\Components\Grid::make()
+                            ->schema([
+                                Forms\Components\TextInput::make('price_from')
+                                    ->numeric()
+                                    ->label('Minimum Price'),
+                                Forms\Components\TextInput::make('price_to')
+                                    ->numeric()
+                                    ->label('Maximum Price'),
+                            ]),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['price_from'],
+                                fn (Builder $query, $price): Builder => $query->where('price', '>=', $price * 100),
+                            )
+                            ->when(
+                                $data['price_to'],
+                                fn (Builder $query, $price): Builder => $query->where('price', '<=', $price * 100),
+                            );
                     }),
             ])
-            ->filters([
-                //
-            ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make()->icon('heroicon-o-eye'),
+                Tables\Actions\EditAction::make()->icon('heroicon-o-pencil'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -60,24 +136,59 @@ class ProductResource extends Resource
     public static function infolist(Infolist $infolist): Infolist
     {
         return $infolist->schema([
-            TextEntry::make('name'),
-            TextEntry::make('price')
-                ->formatStateUsing(function ($state) {
-                    $formatter = new NumberFormatter(app()->getLocale(), NumberFormatter::CURRENCY);
+            Section::make('Product Information')
+                ->description('Detailed product information and pricing')
+                ->icon('heroicon-o-information-circle')
+                ->collapsible()
+                ->schema([
+                    Grid::make(2)
+                        ->schema([
+                            TextEntry::make('name')
+                                ->label('Product Name')
+                                ->weight('bold')
+                                ->columnSpan(1)
+                                ->icon('heroicon-o-cube')
+                                ->copyable()
+                                ->color('blue-600'),
 
-                    return $formatter->formatCurrency(amount: $state / 100, currency: 'eur');
-                }),
-            Actions::make([
-                Action::make('Buy product')
-                    ->url(fn ($record): string => self::getUrl('checkout', [$record])),
-            ]),
+                            TextEntry::make('price')
+                                ->label('Price')
+                                ->formatStateUsing(function ($state) {
+                                    $formatter = new NumberFormatter(app()->getLocale(), NumberFormatter::CURRENCY);
+                                    return $formatter->formatCurrency(amount: $state / 100, currency: 'eur');
+                                })
+                                ->columnSpan(1)
+                                ->icon('heroicon-o-currency-euro')
+                                ->color('green-600')
+                                ->badge(),
+
+                            TextEntry::make('created_at')
+                                ->label('Listed Date')
+                                ->dateTime()
+                                ->columnSpan(1)
+                                ->icon('heroicon-o-calendar'),
+                        ]),
+
+                    Actions::make([
+                        Action::make('Buy product')
+                            ->url(fn ($record): string => self::getUrl('checkout', [$record]))
+                            ->icon('heroicon-o-shopping-cart')
+                            ->size('lg')
+                            ->color('success')
+                            ->iconPosition('left')
+                            ->tooltip('Proceed to checkout'),
+                    ])
+                        ->alignment('left'),
+                ])
+                ->columns(1),
         ]);
     }
+
 
     public static function getRelations(): array
     {
         return [
-            //
+            // Define relations here as needed
         ];
     }
 

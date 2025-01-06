@@ -152,7 +152,6 @@ class UserResource extends Resource
                                     ->label('Profile Picture')
                                     ->circular()
                                     ->height(120)
-                                    ->alignCenter()
                                     ->columnSpanFull(),
 
                                 TextEntry::make('name')
