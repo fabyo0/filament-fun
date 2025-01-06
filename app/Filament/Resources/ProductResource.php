@@ -21,6 +21,8 @@ use Illuminate\Database\Eloquent\Builder;
 use NumberFormatter;
 use Filament\Forms;
 use Filament\Infolists\Components;
+use pxlrbt\FilamentExcel\Actions\Concerns\ExportableAction;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 
 class ProductResource extends Resource
 {
@@ -125,11 +127,13 @@ class ProductResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make()->icon('heroicon-o-eye'),
                 Tables\Actions\EditAction::make()->icon('heroicon-o-pencil'),
+                Tables\Actions\DeleteAction::make()->icon('heroicon-o-trash'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
+                ExportBulkAction::make(),
             ]);
     }
 

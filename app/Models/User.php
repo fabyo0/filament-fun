@@ -69,6 +69,8 @@ class User extends Authenticatable implements HasMedia
         'password',
         'avatar',
         'stripe_customer_id',
+        'last_login_at',
+        'last_login_ip',
     ];
 
     /**
@@ -91,6 +93,7 @@ class User extends Authenticatable implements HasMedia
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'last_login_at' => 'datetime'
         ];
     }
 

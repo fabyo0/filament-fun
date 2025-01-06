@@ -12,6 +12,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class DepartmentResource extends Resource
 {
@@ -51,27 +52,61 @@ class DepartmentResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->searchable(),
+                    ->label('Department Name')
+                    ->searchable()
+                    ->sortable()
+                    ->copyable()
+                    ->weight('bold')
+                    ->icon('heroicon-o-building-office'),
+
                 Tables\Columns\TextColumn::make('employee_count')
                     ->counts('employee')
+                    ->label('Team Size')
                     ->badge()
-                    ->searchable(),
+                    ->color(fn (string $state): string => match (true) {
+                        $state >= 10 => 'success',
+                        $state >= 5 => 'warning',
+                        default => 'danger',
+                    })
+                    ->icon('heroicon-o-users')
+                    ->sortable(),
+
                 Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
+                    ->label('Created Date')
+                    ->dateTime('d M Y')
                     ->sortable()
+                    ->icon('heroicon-o-calendar')
                     ->toggleable(isToggledHiddenByDefault: true),
+
                 Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
+                    ->label('Last Update')
+                    ->since()
                     ->sortable()
+                    ->icon('heroicon-o-clock')
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->defaultSort('name', 'asc')
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('employee_count')
+                    ->options([
+                        'small' => 'Small Team (< 5)',
+                        'medium' => 'Medium Team (5-10)',
+                        'large' => 'Large Team (> 10)',
+                    ])
+                    ->query(function (Builder $query, array $data) {
+                        return match ($data['value']) {
+                            'small' => $query->having('employee_count', '<', 5),
+                            'medium' => $query->having('employee_count', '>=', 5)
+                                ->having('employee_count', '<=', 10),
+                            'large' => $query->having('employee_count', '>', 10),
+                            default => $query
+                        };
+                    }),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ViewAction::make()->icon('heroicon-o-eye'),
+                Tables\Actions\EditAction::make()->icon('heroicon-o-pencil'),
+                Tables\Actions\DeleteAction::make()->icon('heroicon-o-trash'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

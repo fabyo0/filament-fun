@@ -8,6 +8,8 @@ use App\Enums\Role;
 use App\Filament\Resources\UserResource\Pages;
 use App\Models\User;
 use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
 use Filament\Infolists\Components\Grid;
 use Filament\Infolists\Components\ImageEntry;
@@ -16,9 +18,11 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 
 class UserResource extends Resource
 {
@@ -89,45 +93,139 @@ class UserResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('email')
-                    ->searchable(),
+                    ->label('Full Name')
+                    ->searchable()
+                    ->sortable()
+                    ->copyable()
+                    ->icon('heroicon-o-user')
+                    ->weight('bold')
+                    ->description(fn ($record) => $record->email),
+
                 Tables\Columns\TextColumn::make('roles.name')
+                    ->label('User Roles')
                     ->badge()
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('email_verified_at')
-                    ->dateTime()
+                    ->color('primary')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable()
+                    ->icon('heroicon-o-shield-check')
+                    ->formatStateUsing(fn ($state) => ucfirst($state)),
+
+                Tables\Columns\IconColumn::make('email_verified_at')
+                    ->label('Email Status')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-check-badge')
+                    ->falseIcon('heroicon-o-x-circle')
+                    ->trueColor('success')
+                    ->falseColor('danger')
+                    ->alignCenter()
                     ->sortable(),
+
+                Tables\Columns\TextColumn::make('last_login_at')
+                    ->label('Last Login')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable()
+                    ->description(fn ($record) => $record->last_login_ip)
+                    ->icon('heroicon-o-clock')
+                    ->since(),
+
                 Tables\Columns\TextColumn::make('deleted_at')
+                    ->label('Deleted')
                     ->dateTime()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->icon('heroicon-o-trash')
+                    ->color('danger'),
+
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Registration Date')
                     ->dateTime()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->icon('heroicon-o-calendar'),
             ])
+            ->defaultSort('created_at', 'desc')
             ->filters([
-                Tables\Filters\TrashedFilter::make(),
+                Tables\Filters\TrashedFilter::make()
+                    ->label('Show Deleted Users')
+                    ->indicator('Deleted'),
+
                 Tables\Filters\SelectFilter::make('roles')
                     ->relationship(name: 'roles', titleAttribute: 'name')
                     ->multiple()
-                    ->preload(),
+                    ->preload()
+                    ->label('Filter by Role')
+                    ->indicator('Roles'),
+
+                Filter::make('verified')
+                    ->label('Email Verification')
+                    ->form([
+                        Select::make('email_verified')
+                            ->options([
+                                'verified' => 'Verified Users',
+                                'unverified' => 'Unverified Users',
+                            ])
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query->when(
+                            $data['email_verified'],
+                            fn (Builder $query, $status): Builder => match ($status) {
+                                'verified' => $query->whereNotNull('email_verified_at'),
+                                'unverified' => $query->whereNull('email_verified_at'),
+                                default => $query
+                            }
+                        );
+                    }),
+
+                Filter::make('created_at')
+                    ->form([
+                        DatePicker::make('created_from')
+                            ->label('Registered From'),
+                        DatePicker::make('created_until')
+                            ->label('Registered Until'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['created_from'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                            )
+                            ->when(
+                                $data['created_until'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                            );
+                    }),
             ])
+            ->filtersFormColumns(3)
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ViewAction::make()
+                    ->icon('heroicon-o-eye'),
+
+                Tables\Actions\EditAction::make()
+                    ->icon('heroicon-o-pencil'),
+
+                /*Tables\Actions\Action::make('impersonate')
+                    ->icon('heroicon-o-identification')
+                    ->color('warning')
+                    ->requiresConfirmation()
+                    ->action(fn ($record) => Auth::user()->impersonate($record)),*/
+
+                Tables\Actions\DeleteAction::make()
+                    ->icon('heroicon-o-trash'),
+
+                Tables\Actions\RestoreAction::make()
+                    ->icon('heroicon-o-arrow-path'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\RestoreBulkAction::make(),
+                    ExportBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->striped()
+            ->poll('60s');
     }
 
     public static function getRelations(): array

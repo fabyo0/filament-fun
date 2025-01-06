@@ -10,6 +10,7 @@ use App\Models\Employee;
 use App\Models\State;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
@@ -24,6 +25,7 @@ use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 
@@ -120,12 +122,12 @@ class EmployeeResource extends Resource
                                             ->pluck('name', 'id');
                                     })
                                     ->placeholder('Select State')
-                                    ->afterStateUpdated(fn (Set $set) => $set('city_id', null))
+                                    ->afterStateUpdated(fn(Set $set) => $set('city_id', null))
                                     ->native(false)
                                     ->preload()
                                     ->live()
                                     ->searchable()
-                                    ->disabled(fn (Get $get): bool => ! $get('country_id'))
+                                    ->disabled(fn(Get $get): bool => !$get('country_id'))
                                     ->required()
                                     ->helperText('Select the state within the country.'),
 
@@ -138,7 +140,7 @@ class EmployeeResource extends Resource
                                     ->placeholder('Select City')
                                     ->searchable()
                                     ->live()
-                                    ->disabled(fn (Get $get): bool => ! $get('state_id'))
+                                    ->disabled(fn(Get $get): bool => !$get('state_id'))
                                     ->required()
                                     ->helperText('Select the city within the selected state.'),
 
@@ -187,57 +189,95 @@ class EmployeeResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('full_name')
-                    ->searchable(['first_name', 'last_name']),
+                    ->label('Employee Name')
+                    ->searchable(['first_name', 'last_name'])
+                    ->sortable()
+                    ->copyable()
+                    ->icon('heroicon-o-user')
+                    ->weight('bold'),
+
                 Tables\Columns\TextColumn::make('department.name')
+                    ->label('Department')
                     ->badge()
-                    ->numeric()
-                    ->sortable(),
+                    ->color('success')
+                    ->icon('heroicon-o-building-office')
+                    ->sortable()
+                    ->toggleable()
+                    ->searchable(),
+
                 Tables\Columns\TextColumn::make('date_hired')
-                    ->date()
-                    ->sortable(),
-            ])->defaultSort(column: 'first_name', direction: 'desc')
+                    ->label('Hire Date')
+                    ->date('d M Y')
+                    ->sortable()
+                    ->icon('heroicon-o-calendar')
+                    ->description(fn($record) => 'Service: ' . Carbon::parse($record->date_hired)->diffForHumans(null, true))
+                    ->toggleable(),
+
+            ])
+            ->defaultSort('first_name', 'desc')
             ->filters([
-                SelectFilter::make('Department')
-                    ->label('Filter by Department')
+                SelectFilter::make('department')
+                    ->label('Department')
                     ->native(false)
                     ->searchable()
                     ->preload()
+                    ->multiple()
                     ->relationship(
                         name: 'department',
                         titleAttribute: 'name'
-                    ),
-                Filter::make('created_at')
+                    )
+                    ->indicator('Department'),
+
+                Filter::make('hire_date')
                     ->form([
-                        DatePicker::make('created_from')
+                        DatePicker::make('hired_from')
+                            ->label('Hired From')
                             ->displayFormat('d/m/Y'),
-                        DatePicker::make('created_until')
+                        DatePicker::make('hired_until')
+                            ->label('Hired Until')
                             ->displayFormat('d/m/Y'),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
                         return $query
                             ->when(
-                                $data['created_from'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                                $data['hired_from'],
+                                fn(Builder $query, $date): Builder => $query->whereDate('date_hired', '>=', $date),
                             )
                             ->when(
-                                $data['created_until'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                                $data['hired_until'],
+                                fn(Builder $query, $date): Builder => $query->whereDate('date_hired', '<=', $date),
                             );
-                    }),
-                // TODO: Consider using FiltersLayout::AboveContent to display the filter as a menu.
-                // https://filamentphp.com/docs/3.x/tables/filters/layout
+                    })
+                    ->indicateUsing(function (array $data): array {
+                        $indicators = [];
+
+                        if ($data['hired_from'] ?? null) {
+                            $indicators[] = 'Hired from ' . Carbon::parse($data['hired_from'])->toFormattedDateString();
+                        }
+
+                        if ($data['hired_until'] ?? null) {
+                            $indicators[] = 'Hired until ' . Carbon::parse($data['hired_until'])->toFormattedDateString();
+                        }
+
+                        return $indicators;
+                    })
             ])
+            ->filtersFormColumns(2)
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ViewAction::make()
+                    ->icon('heroicon-o-eye'),
+                Tables\Actions\EditAction::make()
+                    ->icon('heroicon-o-pencil'),
+                Tables\Actions\DeleteAction::make()
+                    ->icon('heroicon-o-trash'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    ExportBulkAction::make(),
                 ]),
-                ExportBulkAction::make(),
-            ]);
+            ])
+            ->striped();
     }
 
     public static function infolist(Infolist $infolist): Infolist
