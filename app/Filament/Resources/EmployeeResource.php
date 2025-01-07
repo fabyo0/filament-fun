@@ -406,6 +406,11 @@ class EmployeeResource extends Resource
             ]);
     }
 
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) Employee::count();
+    }
+
     public static function getRelations(): array
     {
         return [

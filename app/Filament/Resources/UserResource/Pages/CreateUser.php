@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\UserResource\Pages;
 
+use App\Enums\Role;
 use App\Filament\Resources\UserResource;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Database\Eloquent\Model;
@@ -14,14 +15,11 @@ class CreateUser extends CreateRecord
 
     protected function handleRecordCreation(array $data): Model
     {
-        $role = $data['roles'] ?? null;
+        $role = $data['roles'] ?? strtolower(Role::USER->value);
         unset($data['roles']);
 
         $user = static::getModel()::create($data);
-
-        if ($role) {
-            $user->assignRole($role);
-        }
+        $user->syncRoles($role);
 
         return $user;
     }

@@ -86,11 +86,6 @@ class UserResource extends Resource
                                 Forms\Components\Select::make('roles')
                                     ->label('Assign Role')
                                     ->preload()
-                                    /*->relationship(
-                                        name: 'roles',
-                                        titleAttribute: 'name',
-                                        modifyQueryUsing: fn ($query) => $query->where('guard_name', 'web')
-                                    )*/
                                     ->options(Role::pluck('name', 'name')->toArray())
                                     ->placeholder('Select Role')
                                     ->native(false)
@@ -311,6 +306,11 @@ class UserResource extends Resource
             ->withoutGlobalScope(
                 scope: SoftDeletingScope::class
             );
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) User::count();
     }
 
     public static function getPages(): array

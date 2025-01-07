@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Enums\Role as RoleEnum;
 use Database\Factories\UserFactory;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
@@ -18,6 +19,7 @@ use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\Permission\Models\Role;
 use Spatie\Permission\Traits\HasRoles;
 
 /**
@@ -117,6 +119,19 @@ class User extends Authenticatable implements FilamentUser, HasMedia
 
     public function canAccessPanel(Panel $panel): bool
     {
-        return $this->hasRole(roles: 'admin');
+        return $this->hasAnyRole([
+            strtolower(RoleEnum::ADMIN->value),
+            strtolower(RoleEnum::USER->value),
+        ]);
+    }
+
+    protected static function booted(): void
+    {
+        static::created(function (User $user) {
+
+            if (! $user->hasAnyRole(Role::pluck('name', 'id'))) {
+                $user->assignRole(roles: strtolower(RoleEnum::USER->value));
+            }
+        });
     }
 }
