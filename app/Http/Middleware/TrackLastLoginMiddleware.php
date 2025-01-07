@@ -17,7 +17,6 @@ class TrackLastLoginMiddleware
     {
         if (auth()->check()) {
             $user = auth()->user();
-
             if (! $user->last_login_at || now()->diffInMinutes($user->last_login_at) > 5) {
                 $user->update([
                     'last_login_at' => now(),
