@@ -122,6 +122,11 @@ class DepartmentResource extends Resource
         ];
     }
 
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) Department::count();
+    }
+
     public static function getPages(): array
     {
         return [

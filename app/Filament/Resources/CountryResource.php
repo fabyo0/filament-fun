@@ -70,25 +70,81 @@ class CountryResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('code')
+                    ->label('Country Name')
                     ->searchable()
-                    ->badge(),
-                Tables\Columns\TextColumn::make('phonecode'),
+                    ->sortable()
+                    ->weight('bold')
+                    ->copyable()
+                    ->tooltip('Full country name'),
+
+                Tables\Columns\TextColumn::make('code')
+                    ->label('ISO Code')
+                    ->searchable()
+                    ->sortable()
+                    ->badge()
+                    ->color('success')
+                    ->formatStateUsing(fn (string $state): string => strtoupper($state))
+                    ->tooltip('ISO 3166-1 alpha-2 code'),
+
+                Tables\Columns\TextColumn::make('phonecode')
+                    ->label('Phone Code')
+                    ->searchable()
+                    ->sortable()
+                    ->badge()
+                    ->color('info')
+                    ->formatStateUsing(fn (string $state): string => '+'.$state)
+                    ->tooltip('International calling code'),
+
+                Tables\Columns\TextColumn::make('state_count')
+                    ->counts('state')
+                    ->label('State')
+                    ->badge()
+                    ->color('gray'),
             ])
+            ->defaultSort('name', 'asc')
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('has_state')
+                    ->label('With State')
+                    ->options([
+                        'yes' => 'Has State',
+                        'no' => 'No State',
+                    ])
+                    ->query(function ($query, array $data) {
+                        if ($data['value'] === 'yes') {
+                            return $query->has('state');
+                        }
+                        if ($data['value'] === 'no') {
+                            return $query->doesntHave('state');
+                        }
+
+                        return $query;
+                    }),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ViewAction::make()
+                    ->tooltip('View details'),
+
+                Tables\Actions\EditAction::make()
+                    ->tooltip('Edit country'),
+
+                Tables\Actions\DeleteAction::make()
+                    ->tooltip('Delete country'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->requiresConfirmation(),
+                    Tables\Actions\BulkAction::make('export')
+                        ->label('Export Selected')
+                        ->icon('heroicon-o-arrow-down-tray')
+                        ->action(function (Collection $records): void {
+                            // Export logic here
+                        }),
                 ]),
-            ]);
+            ])
+            ->emptyStateHeading('No Countries Found')
+            ->emptyStateDescription('Create your first country by clicking the button below.')
+            ->emptyStateIcon('heroicon-o-globe-alt');
     }
 
     public static function getRelations(): array

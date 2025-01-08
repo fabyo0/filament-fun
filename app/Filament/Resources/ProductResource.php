@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProductResource\Pages;
@@ -192,6 +194,11 @@ class ProductResource extends Resource
         return [
             // Define relations here as needed
         ];
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) Product::count();
     }
 
     public static function getPages(): array

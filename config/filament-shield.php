@@ -88,4 +88,9 @@ return [
         'enabled' => true,
     ],
 
+    'filament' => [
+        'enable_team_permissions' => true,
+        'tenant_model' => 'App\\Models\\Team',
+        'tenant_ownership_relationship_name' => 'team',
+    ],
 ];

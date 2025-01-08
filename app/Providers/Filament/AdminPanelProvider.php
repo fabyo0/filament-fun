@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Providers\Filament;
 
 use App\Filament\Pages\Backups;
+use App\Filament\Pages\Tenancy\RegisterTeam;
 use App\Http\Middleware\TrackLastLoginMiddleware;
+use App\Models\Team;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\FontProviders\GoogleFontProvider;
 use Filament\Http\Middleware\Authenticate;
@@ -92,6 +94,11 @@ final class AdminPanelProvider extends PanelProvider
                 Blog::make(),
             ])
             ->databaseNotifications()
+            ->tenant(model: Team::class, slugAttribute: 'slug', ownershipRelationship: 'team')
+            ->tenantRegistration(RegisterTeam::class)
+            ->tenantMiddleware([
+                \BezhanSalleh\FilamentShield\Middleware\SyncShieldTenant::class,
+            ], isPersistent: true)
             ->authMiddleware([
                 Authenticate::class,
             ]);

@@ -8,13 +8,17 @@ namespace App\Models;
 use App\Enums\Role as RoleEnum;
 use Database\Factories\UserFactory;
 use Filament\Models\Contracts\FilamentUser;
+use Filament\Models\Contracts\HasTenants;
 use Filament\Panel;
 use Firefly\FilamentBlog\Traits\HasBlog;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Collection;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\MediaLibrary\HasMedia;
@@ -47,9 +51,44 @@ use Spatie\Permission\Traits\HasRoles;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereRememberToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUpdatedAt($value)
  *
+ * @property string|null $stripe_customer_id
+ * @property string|null $avatar
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property string|null $profile_photo_path
+ * @property \Illuminate\Support\Carbon|null $last_login_at
+ * @property string|null $last_login_ip
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Activitylog\Models\Activity> $activities
+ * @property-read int|null $activities_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Firefly\FilamentBlog\Models\Comment> $comments
+ * @property-read int|null $comments_count
+ * @property-read \Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection<int, \Spatie\MediaLibrary\MediaCollections\Models\Media> $media
+ * @property-read int|null $media_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Order> $order
+ * @property-read int|null $order_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Permission\Models\Permission> $permissions
+ * @property-read int|null $permissions_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Firefly\FilamentBlog\Models\Post> $posts
+ * @property-read int|null $posts_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Role> $roles
+ * @property-read int|null $roles_count
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User permission($permissions, $without = false)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User role($roles, $guard = null, $without = false)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereAvatar($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereLastLoginAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereLastLoginIp($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereProfilePhotoPath($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereStripeCustomerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User withoutPermission($permissions)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User withoutRole($roles, $guard = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User withoutTrashed()
+ *
  * @mixin \Eloquent
  */
-class User extends Authenticatable implements FilamentUser, HasMedia
+class User extends Authenticatable implements FilamentUser, HasMedia, HasTenants
 {
     use HasBlog;
 
@@ -106,10 +145,25 @@ class User extends Authenticatable implements FilamentUser, HasMedia
         return $this->hasMany(related: Order::class);
     }
 
+    public function team(): BelongsToMany
+    {
+        return $this->belongsToMany(related: Team::class, table: 'team_user');
+    }
+
+    public function canAccessTenant(Model $tenant): bool
+    {
+        return $this->team()->whereKey($tenant)->exists();
+    }
+
+    public function getTenants(Panel $panel): array|Collection
+    {
+        return $this->team;
+    }
+
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->logAll();
+            ->logOnly(['name', 'email']);
     }
 
     public function canComment(): bool

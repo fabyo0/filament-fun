@@ -18,6 +18,22 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read int|null $state_count
  * @property-read Collection<int, Employee> $employee
  * @property-read int|null $employee_count
+ * @property int $id
+ * @property string $name
+ * @property string $code
+ * @property int $phonecode
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read Collection<int, \App\Models\City> $cities
+ * @property-read int|null $cities_count
+ *
+ * @method static \Database\Factories\CountryFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Country whereCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Country whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Country whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Country whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Country wherePhonecode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Country whereUpdatedAt($value)
  *
  * @mixin \Eloquent
  */

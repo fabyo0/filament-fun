@@ -217,12 +217,6 @@ class UserResource extends Resource
                 Tables\Actions\EditAction::make()
                     ->icon('heroicon-o-pencil'),
 
-                /*Tables\Actions\Action::make('impersonate')
-                    ->icon('heroicon-o-identification')
-                    ->color('warning')
-                    ->requiresConfirmation()
-                    ->action(fn ($record) => Auth::user()->impersonate($record)),*/
-
                 Tables\Actions\DeleteAction::make()
                     ->icon('heroicon-o-trash'),
 
