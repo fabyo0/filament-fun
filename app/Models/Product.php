@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Casts\MoneyCast;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -38,6 +39,13 @@ class Product extends Model
         'name',
         'price',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'price' => MoneyCast::class
+        ];
+    }
 
     public function order(): HasMany
     {

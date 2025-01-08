@@ -84,7 +84,7 @@ class Employee extends Model implements HasMedia
         'zip_code',
         'date_of_birth',
         'date_hired',
-        'team_id',
+//        'team_id',
     ];
 
     protected function casts(): array
@@ -122,10 +122,10 @@ class Employee extends Model implements HasMedia
         return $this->belongsTo(related: Department::class, foreignKey: 'department_id');
     }
 
-    public function team(): BelongsTo
+  /*  public function team(): BelongsTo
     {
         return $this->belongsTo(related: Team::class, foreignKey: 'team_id');
-    }
+    }*/
 
     public function getActivitylogOptions(): LogOptions
     {

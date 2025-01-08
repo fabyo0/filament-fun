@@ -182,7 +182,6 @@ class User extends Authenticatable implements FilamentUser, HasMedia, HasTenants
     protected static function booted(): void
     {
         static::created(function (User $user) {
-
             if (! $user->hasAnyRole(Role::pluck('name', 'id'))) {
                 $user->assignRole(roles: strtolower(RoleEnum::USER->value));
             }

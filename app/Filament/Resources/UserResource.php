@@ -70,7 +70,7 @@ class UserResource extends Resource
                                     ->label('Profile Picture')
                                     ->image()
                                     ->maxSize(1024)
-                                    ->directory('avatars')
+                                    ->directory('profile_image')
                                     ->preserveFilenames()
                                     ->imageResizeMode('cover')
                                     ->imageCropAspectRatio('1:1')

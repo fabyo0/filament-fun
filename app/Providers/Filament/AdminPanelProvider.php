@@ -94,11 +94,11 @@ final class AdminPanelProvider extends PanelProvider
                 Blog::make(),
             ])
             ->databaseNotifications()
-            ->tenant(model: Team::class, slugAttribute: 'slug', ownershipRelationship: 'team')
-            ->tenantRegistration(RegisterTeam::class)
-            ->tenantMiddleware([
+          //  ->tenant(model: Team::class, slugAttribute: 'slug', ownershipRelationship: 'team')
+           // ->tenantRegistration(RegisterTeam::class)
+          /*  ->tenantMiddleware([
                 \BezhanSalleh\FilamentShield\Middleware\SyncShieldTenant::class,
-            ], isPersistent: true)
+            ], isPersistent: true)*/
             ->authMiddleware([
                 Authenticate::class,
             ]);
