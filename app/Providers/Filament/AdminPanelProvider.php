@@ -6,6 +6,9 @@ namespace App\Providers\Filament;
 
 use App\Filament\Pages\Backups;
 use App\Filament\Pages\Tenancy\RegisterTeam;
+use App\Filament\Widgets\EmployeeTrendChart;
+use App\Filament\Widgets\ProductAnalyticsChart;
+use App\Filament\Widgets\UserOverview;
 use App\Http\Middleware\TrackLastLoginMiddleware;
 use App\Models\Team;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
@@ -18,7 +21,6 @@ use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
-use Filament\Widgets;
 use Firefly\FilamentBlog\Blog;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -61,7 +63,9 @@ final class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                Widgets\AccountWidget::class,
+                ProductAnalyticsChart::class,
+                EmployeeTrendChart::class,
+                UserOverview::class,
             ])
             ->middleware([
                 EncryptCookies::class,

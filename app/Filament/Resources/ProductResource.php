@@ -86,19 +86,17 @@ class ProductResource extends Resource
                 TextColumn::make('price')
                     ->label('Price')
                     ->sortable()
-                    ->money('eur')
-                    ->alignEnd()
+                    ->formatStateUsing(fn ($state) => number_format($state, 2))
                     ->color('success')
                     ->icon('heroicon-o-currency-euro')
                     ->toggleable()
                     ->summarize([
                         Summarizer::make()
                             ->label('Average')
-                            ->using(fn ($query) => $query->avg('price') / 100)
-                            ->money('eur'),
+                            ->using(fn ($query) => number_format($query->avg('price') / 1000, 2))
+                            ->prefix('€'),
                     ]),
             ])
-            ->defaultSort('name', 'asc')
             ->filters([
                 Filter::make('price_range')
                     ->form([

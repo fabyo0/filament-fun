@@ -13,6 +13,7 @@
         "filament/filament": "^3.2",
         "filament/forms": "^3.2",
         "firefly/filament-blog": "^2.0",
+        "flowframe/laravel-trend": "^0.3.0",
         "jeffgreco13/filament-breezy": "^2.4",
         "joaopaulolndev/filament-general-settings": "^1.0",
         "laravel/framework": "^11.31",
