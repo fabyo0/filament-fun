@@ -80,6 +80,7 @@ final class AdminPanelProvider extends PanelProvider
                 TrackLastLoginMiddleware::class,
             ])
             ->spa()
+            ->databaseNotifications()
             ->plugins(plugins: [
                 FilamentShieldPlugin::make(),
                 BreezyCore::make()
@@ -97,7 +98,6 @@ final class AdminPanelProvider extends PanelProvider
                     ->usingPage(Backups::class),
                 Blog::make(),
             ])
-            ->databaseNotifications()
           //  ->tenant(model: Team::class, slugAttribute: 'slug', ownershipRelationship: 'team')
            // ->tenantRegistration(RegisterTeam::class)
           /*  ->tenantMiddleware([

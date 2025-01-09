@@ -34,9 +34,13 @@ class ProductAnalyticsChart extends ApexChartWidget
 
         return [
             'chart' => [
-                'type' => 'line',
-                'height' => 300,
-                'toolbar' => ['show' => false],
+                'type' => 'bar',
+                'height' => 260,
+                'parentHeightOffset' => 2,
+                'stacked' => true,
+                'toolbar' => [
+                    'show' => false,
+                ],
             ],
             'series' => [
                 [
@@ -46,16 +50,49 @@ class ProductAnalyticsChart extends ApexChartWidget
             ],
             'xaxis' => [
                 'categories' => $products->pluck('date')->toArray(),
-                'labels' => ['style' => ['colors' => '#9ca3af']],
+                'labels' => [
+                    'style' => [
+                        'fontFamily' => 'inherit',
+                    ],
+                ],
+                'axisTicks' => [
+                    'show' => false,
+                ],
+                'axisBorder' => [
+                    'show' => false,
+                ],
             ],
-            'stroke' => ['curve' => 'smooth'],
             'fill' => [
                 'type' => 'gradient',
                 'gradient' => [
-                    'opacityFrom' => 0.7,
-                    'opacityTo' => 0.3,
+                    'shade' => 'dark',
+                    'type' => 'vertical',
+                    'shadeIntensity' => 0.5,
+                    'gradientToColors' => ['#d97706', '#c2410c'],
+                    'opacityFrom' => 1,
+                    'opacityTo' => 1,
+                    'stops' => [0, 100],
                 ],
             ],
+
+            'yaxis' => [
+                'offsetX' => -16,
+                'labels' => [
+                    'style' => [
+                        'fontFamily' => 'inherit',
+                    ],
+                ],
+                'min' => -200,
+                'max' => 300,
+                'tickAmount' => 5,
+            ],
+
+            'stroke' => [
+                'curve' => 'smooth',
+                'width' => 1,
+                'lineCap' => 'round',
+            ],
+            'colors' => ['#f59e0b', '#ea580c'],
         ];
     }
 }
