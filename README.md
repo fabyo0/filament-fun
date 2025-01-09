@@ -83,6 +83,30 @@ Place the project in your Valet directory, and access it via the configured doma
 
 ---
 
+### 7. Running the Queue Worker for Notifications
+
+This application uses queues for handling notifications. To ensure notifications are processed, you need to run the queue worker.
+
+#### Steps:
+1. Start the queue worker by running the following command:
+   ```bash
+   php artisan queue:work
+   ```
+2. For long-running applications, consider using a process manager like **Supervisor** to keep the queue worker running continuously. Example Supervisor configuration:
+   ```
+   [program:laravel-worker]
+   process_name=%(program_name)s_%(process_num)02d
+   command=php /path-to-your-project/artisan queue:work --sleep=3 --tries=3
+   autostart=true
+   autorestart=true
+   user=your-user
+   numprocs=1
+   redirect_stderr=true
+   stdout_logfile=/path-to-your-project/worker.log
+   ```
+
+---
+
 ## Additional Notes
 
 - For frontend assets, run the following commands if applicable:
@@ -93,5 +117,7 @@ Place the project in your Valet directory, and access it via the configured doma
   ```env
   APP_URL=http://localhost:8000
   ```
+- Monitor your queue jobs and logs to ensure the application runs smoothly.
 
 ---
+
