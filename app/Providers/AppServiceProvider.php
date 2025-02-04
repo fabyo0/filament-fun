@@ -51,7 +51,7 @@ final class AppServiceProvider extends ServiceProvider
     private function configureModels(): void
     {
         Model::shouldBeStrict(! $this->app->isProduction());
-        Model::unguard();
+        Model::preventLazyLoading(! $this->app->isProduction());
     }
 
     private function languageSwitch(): void
