@@ -97,6 +97,8 @@ final class AdminPanelProvider extends PanelProvider
                 FilamentSpatieLaravelBackupPlugin::make()
                     ->usingPage(Backups::class),
                 Blog::make(),
+
+                \TomatoPHP\FilamentTranslations\FilamentTranslationsPlugin::make()
             ])
           //  ->tenant(model: Team::class, slugAttribute: 'slug', ownershipRelationship: 'team')
            // ->tenantRegistration(RegisterTeam::class)

@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Events\NewNotificationEvent;
 use App\Filament\Resources\UserResource;
 use App\Models\User;
 use Filament\Notifications\Actions\Action;
@@ -13,7 +14,7 @@ class UserObserver
     {
         $recipient = auth()->user();
 
-        Notification::make()
+        $notification = Notification::make()
             ->title('New User Created')
             ->body("User {$user->name} has been created successfully")
             ->icon('heroicon-o-user-plus')
@@ -22,8 +23,7 @@ class UserObserver
                     ->button()
                     ->url(UserResource::getUrl('view', ['record' => $user])),
             ])
-            ->duration(5000)
-            ->sendToDatabase($recipient);
+        ->sendToDatabase($recipient);
     }
 
     public function deleted(User $user): void

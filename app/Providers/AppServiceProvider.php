@@ -72,7 +72,6 @@ final class AppServiceProvider extends ServiceProvider
             Js::make('stripe-js', 'https://js.stripe.com/v3/'),
         ]);
     }
-
     /**
      * Bootstrap any application services.
      */
@@ -83,7 +82,7 @@ final class AppServiceProvider extends ServiceProvider
         $this->configureVite();
         $this->configureCommands();
         $this->configurePasswordValidation();
-        $this->languageSwitch();
+//        $this->languageSwitch();
         $this->filamentAsset();
     }
 }

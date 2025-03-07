@@ -18,6 +18,7 @@
         "jeffgreco13/filament-breezy": "^2.4",
         "joaopaulolndev/filament-general-settings": "^1.0",
         "laravel/framework": "^11.31",
+        "laravel/reverb": "^1.0",
         "laravel/tinker": "^2.9",
         "leandrocfe/filament-apex-charts": "^3.1",
         "owenvoke/blade-fontawesome": "^2.8",
@@ -27,7 +28,8 @@
         "shuvroroy/filament-spatie-laravel-backup": "^2.2",
         "spatie/laravel-medialibrary": "^11.11",
         "spatie/laravel-permission": "^6.10",
-        "stripe/stripe-php": "^16.4"
+        "stripe/stripe-php": "^16.4",
+        "tomatophp/filament-translations": "^2.0"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^3.4",
