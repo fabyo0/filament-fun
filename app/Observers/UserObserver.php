@@ -12,7 +12,7 @@ class UserObserver
 {
     public function created(User $user): void
     {
-        $admins = User::where('is_admin', true)->get();
+        $admins = User::role('admin')->get();
 
         if ($admins->isEmpty()) {
             return;
@@ -32,7 +32,7 @@ class UserObserver
 
     public function deleted(User $user): void
     {
-        $admins = User::where('is_admin', true)->get();
+        $admins = User::role('admin')->get();
 
         if ($admins->isEmpty()) {
             return;
