@@ -12,9 +12,13 @@ class UserObserver
 {
     public function created(User $user): void
     {
-        $recipient = auth()->user();
+        $admins = User::where('is_admin', true)->get();
 
-        $notification = Notification::make()
+        if ($admins->isEmpty()) {
+            return;
+        }
+
+        Notification::make()
             ->title('New User Created')
             ->body("User {$user->name} has been created successfully")
             ->icon('heroicon-o-user-plus')
@@ -23,12 +27,16 @@ class UserObserver
                     ->button()
                     ->url(UserResource::getUrl('view', ['record' => $user])),
             ])
-        ->sendToDatabase($recipient);
+            ->sendToDatabase($admins);
     }
 
     public function deleted(User $user): void
     {
-        $recipient = auth()->user();
+        $admins = User::where('is_admin', true)->get();
+
+        if ($admins->isEmpty()) {
+            return;
+        }
 
         Notification::make()
             ->title('User Deleted')
@@ -36,6 +44,6 @@ class UserObserver
             ->icon('heroicon-o-user-minus')
             ->danger()
             ->persistent()
-            ->sendToDatabase($recipient);
+            ->sendToDatabase($admins);
     }
 }

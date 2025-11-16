@@ -82,7 +82,7 @@ final class AppServiceProvider extends ServiceProvider
         $this->configureVite();
         $this->configureCommands();
         $this->configurePasswordValidation();
-//        $this->languageSwitch();
+        $this->languageSwitch();
         $this->filamentAsset();
     }
 }
