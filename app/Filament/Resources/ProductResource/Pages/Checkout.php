@@ -4,6 +4,7 @@ namespace App\Filament\Resources\ProductResource\Pages;
 
 use App\Filament\Resources\ProductResource;
 use App\Models\User;
+use Filament\Notifications\Notification;
 use Filament\Resources\Pages\Concerns\InteractsWithRecord;
 use Filament\Resources\Pages\Page;
 use NumberFormatter;
@@ -25,6 +26,8 @@ class Checkout extends Page
 
     public string $clientSecret;
 
+    protected const STRIPE_MINIMUM_AMOUNT = 50;
+
     public function __construct()
     {
         $this->stripe = new StripeClient(config('services.stripe.secret'));
@@ -32,13 +35,27 @@ class Checkout extends Page
 
     public function mount(int|string $record)
     {
-        // TODO: page content
         $formatter = new NumberFormatter(app()->getLocale(), NumberFormatter::CURRENCY);
 
         $this->record = $this->resolveRecord($record);
+
+        if ($this->record->price < self::STRIPE_MINIMUM_AMOUNT) {
+            Notification::make()
+                ->danger()
+                ->title('Payment Error')
+                ->body(sprintf(
+                    'This product price (%s) is below Stripe\'s minimum amount (%s). Please contact support.',
+                    $formatter->formatCurrency($this->record->price / 100, 'eur'),
+                    $formatter->formatCurrency(self::STRIPE_MINIMUM_AMOUNT / 100, 'eur')
+                ))
+                ->persistent()
+                ->send();
+
+            return redirect()->to(ProductResource::getUrl('index'));
+        }
+
         $this->heading = 'Checkout: '.$this->record->name;
         $this->subheading = $formatter->formatCurrency($this->record->price / 100, 'eur');
-        // TODO: separate checkout
         $this->checkoutKey = 'checkout '.$this->record->id;
         $this->clientSecret = $this->getClientSecret();
     }
@@ -87,14 +104,18 @@ class Checkout extends Page
 
     protected function createNewPaymentIntent(Customer $customer): PaymentIntent
     {
+
+        $amount = max($this->record->price, self::STRIPE_MINIMUM_AMOUNT);
+
         $paymentIntent = $this->stripe->paymentIntents->create([
             'customer' => $customer->id,
             'setup_future_usage' => 'off_session',
-            'amount' => $this->record->price,
+            'amount' => $amount,
             'currency' => config('services.stripe.currency'),
             'metadata' => [
                 'product_id' => $this->record->id,
                 'user_id' => auth()->id(),
+                'original_price' => $this->record->price,
             ],
         ]);
 
