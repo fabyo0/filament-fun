@@ -2,38 +2,57 @@
 
 namespace App\Observers;
 
-use App\Filament\Resources\ProductResource;
 use App\Models\Product;
-use Filament\Notifications\Actions\Action;
+use App\Models\User;
 use Filament\Notifications\Notification;
 
 class ProductObserver
 {
     public function created(Product $product): void
     {
-        $recipient = auth()->user();
+        $this->notifyAdmins(
+            'New Product Created',
+            "Product {$product->name} has been created successfully",
+            'heroicon-o-shopping-bag'
+        );
+    }
 
-        Notification::make()
-            ->title('New Product Added')
-            ->body("Product: {$product->name}\nPrice: {$product->price}")
-            ->icon('heroicon-o-shopping-bag')
-            ->actions([
-                Action::make('view')
-                    ->button()
-                    ->url(ProductResource::getUrl('view', ['record' => $product])),
-            ])
-            ->sendToDatabase($recipient);
+    public function updated(Product $product): void
+    {
+        $this->notifyAdmins(
+            'Product Updated',
+            "Product {$product->name} has been updated",
+            'heroicon-o-pencil'
+        );
     }
 
     public function deleted(Product $product): void
     {
-        $recipient = auth()->user();
+        $this->notifyAdmins(
+            'Product Deleted',
+            "Product {$product->name} has been removed",
+            'heroicon-o-trash',
+            true // danger
+        );
+    }
 
-        Notification::make()
-            ->title('Product Deleted')
-            ->body("Product {$product->name} has been removed")
-            ->icon('heroicon-o-trash')
-            ->danger()
-            ->sendToDatabase($recipient);
+    protected function notifyAdmins(string $title, string $body, string $icon, bool $danger = false): void
+    {
+        $admins = User::role('admin')->get();
+
+        if ($admins->isEmpty()) {
+            return;
+        }
+
+        $notification = Notification::make()
+            ->title($title)
+            ->body($body)
+            ->icon($icon);
+
+        if ($danger) {
+            $notification->danger();
+        }
+
+        $notification->sendToDatabase($admins);
     }
 }

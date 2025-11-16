@@ -18,6 +18,26 @@ class UserObserver
             return;
         }
 
+        if (app()->runningInConsole() && $admins->count() === 1 && $user->hasRole('admin')) {
+            Notification::make()
+                ->title('Welcome Admin!')
+                ->body("Your admin account has been created successfully. Welcome to the system!")
+                ->icon('heroicon-o-shield-check')
+                ->success()
+                ->sendToDatabase($user);
+            return;
+        }
+
+        if (app()->runningInConsole()) {
+            return;
+        }
+
+        $recipients = $admins->where('id', '!=', $user->id);
+
+        if ($recipients->isEmpty()) {
+            return;
+        }
+
         Notification::make()
             ->title('New User Created')
             ->body("User {$user->name} has been created successfully")
@@ -27,12 +47,19 @@ class UserObserver
                     ->button()
                     ->url(UserResource::getUrl('view', ['record' => $user])),
             ])
-            ->sendToDatabase($admins);
+            ->sendToDatabase($recipients);
     }
 
     public function deleted(User $user): void
     {
-        $admins = User::role('admin')->get();
+
+        if (app()->runningInConsole()) {
+            return;
+        }
+
+        $admins = User::role('admin')
+            ->where('id', '!=', $user->id)
+            ->get();
 
         if ($admins->isEmpty()) {
             return;
