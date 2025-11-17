@@ -2,7 +2,7 @@
 
 namespace App\Observers;
 
-use App\Events\NewNotificationEvent;
+use App\Enums\Role;
 use App\Filament\Resources\UserResource;
 use App\Models\User;
 use Filament\Notifications\Actions\Action;
@@ -12,7 +12,7 @@ class UserObserver
 {
     public function created(User $user): void
     {
-        $admins = User::role('admin')->get();
+        $admins = User::role(strtolower(Role::ADMIN->value))->get();
 
         if ($admins->isEmpty()) {
             return;
@@ -57,7 +57,7 @@ class UserObserver
             return;
         }
 
-        $admins = User::role('admin')
+        $admins = User::role(strtolower(Role::ADMIN->value))
             ->where('id', '!=', $user->id)
             ->get();
 

@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Enums\Role;
 use App\Models\Product;
 use App\Models\User;
 use Filament\Notifications\Notification;
@@ -38,7 +39,7 @@ class ProductObserver
 
     protected function notifyAdmins(string $title, string $body, string $icon, bool $danger = false): void
     {
-        $admins = User::role('admin')->get();
+        $admins = User::role(strtolower(Role::ADMIN->value))->get();
 
         if ($admins->isEmpty()) {
             return;
