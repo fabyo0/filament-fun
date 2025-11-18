@@ -25,35 +25,32 @@ final class AppServiceProvider extends ServiceProvider
     {
         //
     }
-
     private function configureCommands(): void
     {
         DB::prohibitDestructiveCommands(
             $this->app->isProduction()
         );
     }
-
     private function configureVite(): void
     {
         Vite::useAggressivePrefetching();
     }
-
     private function configurePasswordValidation(): void
     {
         Password::defaults(fn () => $this->app->isProduction() ? Password::min(8)->uncompromised() : null);
     }
-
     private function configureUrl(): void
     {
-        URL::forceHttps(App::isProduction());
+        if (App::isProduction()) {
+            URL::forceScheme('https');
+            URL::forceRootUrl(config('app.url'));
+        }
     }
-
     private function configureModels(): void
     {
         Model::shouldBeStrict(! $this->app->isProduction());
         Model::preventLazyLoading(! $this->app->isProduction());
     }
-
     private function languageSwitch(): void
     {
         // Switch language
@@ -65,7 +62,6 @@ final class AppServiceProvider extends ServiceProvider
                 ->visible(outsidePanels: true);
         });
     }
-
     private function filamentAsset(): void
     {
         FilamentAsset::register([
