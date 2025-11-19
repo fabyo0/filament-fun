@@ -17,56 +17,84 @@ A comprehensive learning project exploring Filament PHP's capabilities - featuri
 <br>
 
 ### 📊 Dashboard & Analytics
-![Dashboard Overview]
+
+**Dashboard Overview**  
 *Main dashboard with key metrics and charts*
+
 <img width="1423" height="646" alt="Screenshot 2025-11-19 at 20 01 02" src="https://github.com/user-attachments/assets/fd12c0e6-19f4-49b5-a6f1-6a53d287abc2" />
 
 ---
 
 ### 👥 Employee Management
-Employee List
+
+**Employee List**  
 *Employee listing with filters and bulk actions*
+
 <img width="1103" height="591" alt="Screenshot 2025-11-19 at 20 19 34" src="https://github.com/user-attachments/assets/cdbed3f3-ceaf-4fa5-8bbc-1b6bb971f92c" />
 
-Employee Create
+<br>
+
+**Employee Create**  
 *Employee creation form with department selection*
 
-<img width="1065" height="534" alt="Screenshot 2025-11-19 at 20 20 06" src="https://github.com/user-attachments/assets/796ae3f5-1e8a-4226-a9e7-49a9945b9eff" /> <br/><br/>
+<img width="1065" height="534" alt="Screenshot 2025-11-19 at 20 20 06" src="https://github.com/user-attachments/assets/796ae3f5-1e8a-4226-a9e7-49a9945b9eff" />
+
+<br>
+
 <img width="1098" height="605" alt="Screenshot 2025-11-19 at 20 20 51" src="https://github.com/user-attachments/assets/031b3bc9-8509-4921-9829-7a2815be9fec" />
 
+<br>
 
-Employee Details
+**Employee Details**  
 *Detailed employee profile with relationship tabs*
-<img width="1082" height="602" alt="Screenshot 2025-11-19 at 20 21 35" src="https://github.com/user-attachments/assets/35a81146-c53f-4280-9d04-237c24701b0b" /> <br/><br/>
+
+<img width="1082" height="602" alt="Screenshot 2025-11-19 at 20 21 35" src="https://github.com/user-attachments/assets/35a81146-c53f-4280-9d04-237c24701b0b" />
+
+<br>
+
 <img width="1108" height="481" alt="Screenshot 2025-11-19 at 20 22 02" src="https://github.com/user-attachments/assets/b44d5e9b-8036-4266-939b-6b036cbf00d9" />
 
 ---
 
 ### 📦 Product Management
-Product List
-*Product catalog with search and categories*
-<img width="1074" height="593" alt="Screenshot 2025-11-19 at 20 22 53" src="https://github.com/user-attachments/assets/073632e5-9528-49e5-8485-6d0a20501543" /><br/><br/>
 
-Product Create
+**Product List**  
+*Product catalog with search and categories*
+
+<img width="1074" height="593" alt="Screenshot 2025-11-19 at 20 22 53" src="https://github.com/user-attachments/assets/073632e5-9528-49e5-8485-6d0a20501543" />
+
+<br>
+
+**Product Create**  
 *Product creation with inventory management*
+
 <img width="978" height="468" alt="Screenshot 2025-11-19 at 20 23 22" src="https://github.com/user-attachments/assets/63af8830-ae66-488e-9030-ee6aaa9a5f15" />
 
 ---
 
-Location Management
+### 🌍 Location Management
+
+**Countries, States & Cities**  
 *Country, state, and city management*
 
-<img width="1097" height="583" alt="Screenshot 2025-11-19 at 20 24 15" src="https://github.com/user-attachments/assets/2757e0e0-bb2c-44b3-9a15-8422c010a66d" /><br/><br/>
+<img width="1097" height="583" alt="Screenshot 2025-11-19 at 20 24 15" src="https://github.com/user-attachments/assets/2757e0e0-bb2c-44b3-9a15-8422c010a66d" />
+
+<br>
+
 <img width="1118" height="594" alt="Screenshot 2025-11-19 at 20 25 13" src="https://github.com/user-attachments/assets/32e4e966-1d95-4518-bc49-697337998ce1" />
 
 ---
 
 ### 💳 Stripe Integration
-![Payment Dashboard](screenshots/payment-dashboard.png)
+
+**Payment Dashboard**  
+*Stripe payment overview and management*
 
 <img width="1088" height="469" alt="Screenshot 2025-11-19 at 20 25 59" src="https://github.com/user-attachments/assets/7b7ef33a-f8e8-428f-9320-3e3609d99dc2" />
 
-Payment Processing
+<br>
+
+**Payment Processing**  
 *Stripe payment processing interface*
 
 <img width="822" height="591" alt="Screenshot 2025-11-19 at 20 26 35" src="https://github.com/user-attachments/assets/94bb00fa-0ed3-4ad2-be36-e64365365742" />
@@ -74,18 +102,22 @@ Payment Processing
 ---
 
 ### 🛡️ Roles & Permissions
-Roles List
+
+**Roles List**  
 *Role management with Shield integration*
 
 <img width="1107" height="452" alt="Screenshot 2025-11-19 at 20 28 26" src="https://github.com/user-attachments/assets/f484d684-169d-41b1-b4d4-1f1d9e513f48" />
 
+<br>
 
-Permission Matrix
+**Permission Matrix**  
 *Permission assignment interface*
 
 <img width="1101" height="587" alt="Screenshot 2025-11-19 at 20 28 54" src="https://github.com/user-attachments/assets/977c9d4c-c6eb-478c-a65f-6594714dd292" />
 
-User Roles
+<br>
+
+**User Roles**  
 *User role assignment*
 
 <img width="1050" height="536" alt="Screenshot 2025-11-19 at 20 29 15" src="https://github.com/user-attachments/assets/9c2c628d-413f-4895-ade2-feb7cc56d3c9" />
@@ -132,7 +164,7 @@ Ensure you have the following installed:
 
 ### Installation
 
-1️⃣ **Clone & Install Dependencies**
+**1️⃣ Clone & Install Dependencies**
 ```bash
 git clone <repository-url>
 cd filament-fun
@@ -140,13 +172,13 @@ composer install
 npm install
 ```
 
-2️⃣ **Environment Setup**
+**2️⃣ Environment Setup**
 ```bash
 cp .env.example .env
 php artisan key:generate
 ```
 
-3️⃣ **Configure Database**
+**3️⃣ Configure Database**
 
 Update your `.env` file:
 ```env
@@ -158,20 +190,20 @@ DB_USERNAME=root
 DB_PASSWORD=your_password
 ```
 
-4️⃣ **Run Migrations & Seed Data**
+**4️⃣ Run Migrations & Seed Data**
 ```bash
 php artisan migrate --seed
 php artisan storage:link
 ```
 
-5️⃣ **Configure Stripe** (Optional)
+**5️⃣ Configure Stripe** (Optional)
 ```env
 STRIPE_KEY=pk_test_...
 STRIPE_SECRET=sk_test_...
 STRIPE_CURRENCY=usd
 ```
 
-6️⃣ **Build Frontend Assets**
+**6️⃣ Build Frontend Assets**
 ```bash
 npm run build  # Production
 # OR
@@ -223,13 +255,14 @@ Email: Check database/seeders/UserSeeder.php
 Password: Check database/seeders/UserSeeder.php
 ```
 
-> **Security Note:** Change default credentials immediately in production!
+> **⚠️ Security Note:** Change default credentials immediately in production!
 
 ---
 
 ## 📦 Tech Stack
 
 ### Core Framework
+
 | Package | Version | Purpose |
 |---------|---------|---------|
 | Laravel | 11.x | Backend Framework |
@@ -237,6 +270,7 @@ Password: Check database/seeders/UserSeeder.php
 | Livewire | 3.x | Reactive Components |
 
 ### Filament Plugins
+
 - **Shield** - Authorization & Permissions
 - **Breezy** - Authentication & Profile
 - **Excel** - Export Operations
@@ -247,6 +281,7 @@ Password: Check database/seeders/UserSeeder.php
 - **Spatie Backup** - Automated Backups
 
 ### Additional Tools
+
 - **Spatie Permission** - RBAC System
 - **Spatie Media Library** - File Management
 - **Laravel Reverb** - WebSocket Server
@@ -301,12 +336,6 @@ database/
 resources/
 ├── views/                  # Blade Templates
 └── js/                     # Frontend Assets
-
-screenshots/                # 📸 Project Screenshots
-├── dashboard-overview.png
-├── employee-list.png
-├── product-management.png
-└── ...
 ```
 
 ---
@@ -397,26 +426,27 @@ php artisan test --coverage
 
 Contributions are welcome! Please follow these steps:
 
-1. Fork the repository
-2. Create a feature branch
+1. **Fork** the repository
+2. **Create** a feature branch
 ```bash
    git checkout -b feature/amazing-feature
 ```
-3. Commit your changes (use [Conventional Commits](https://www.conventionalcommits.org/))
+3. **Commit** your changes (use [Conventional Commits](https://www.conventionalcommits.org/))
 ```bash
    git commit -m "feat: add amazing feature"
 ```
-4. Push to your branch
+4. **Push** to your branch
 ```bash
    git push origin feature/amazing-feature
 ```
-5. Open a Pull Request
+5. **Open** a Pull Request
 
 ---
 
 ## 🐛 Bug Reports & Feature Requests
 
 Found a bug or have a feature idea? Please [open an issue](https://github.com/yourusername/filament-fun/issues/new) with:
+
 - Clear description
 - Steps to reproduce (for bugs)
 - Expected vs actual behavior
@@ -449,10 +479,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 <div align="center">
 
-**⭐ Star this repo if you find it helpful!**
+### ⭐ Star this repo if you find it helpful!
 
-Made with ❤️ using Filament PHP
+**Made with ❤️ using Filament PHP**
 
 [Report Bug](https://github.com/yourusername/filament-fun/issues) · [Request Feature](https://github.com/yourusername/filament-fun/issues) · [Documentation](https://github.com/yourusername/filament-fun/wiki)
-</div>
 
+</div>
